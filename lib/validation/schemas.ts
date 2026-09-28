@@ -8,9 +8,13 @@
 import { z } from "zod";
 import {
   ACHIEVEMENT_LEVELS,
+  CHOICE_FIELD_TYPES,
   DEBATE_EVENTS,
+  FORM_FIELD_TYPES,
+  FORM_STATUSES,
   MEMBER_STATUSES,
   NEWS_STATUSES,
+  NEWS_VISIBILITIES,
   NSDA_STATUSES,
   ORDER_CATEGORIES,
   ORDER_STATUSES,
@@ -37,6 +41,9 @@ export const achievementLevelSchema = z.enum(keysOf(ACHIEVEMENT_LEVELS));
 export const resourceCategorySchema = z.enum(keysOf(RESOURCE_CATEGORIES));
 export const resourceVisibilitySchema = z.enum(keysOf(RESOURCE_VISIBILITIES));
 export const newsStatusSchema = z.enum(keysOf(NEWS_STATUSES));
+export const newsVisibilitySchema = z.enum(keysOf(NEWS_VISIBILITIES));
+export const formStatusSchema = z.enum(keysOf(FORM_STATUSES));
+export const formFieldTypeSchema = z.enum(keysOf(FORM_FIELD_TYPES));
 
 export const idSchema = z.string().min(1).max(64);
 const shortText = z.string().trim().min(1).max(200);
@@ -69,26 +76,57 @@ const centsSchema = z.number().int().min(0).max(1_000_000);
 // Member-facing input
 // ---------------------------------------------------------------------------
 
-export const updateProfileSchema = z.object({
-  contactEmail: z.email().max(200).optional().or(z.literal("")).transform((v) => (v ? v : undefined)),
-  events: z.array(debateEventSchema).max(4).default([]),
-  partnerName: optionalShort,
-  nsdaMemberId: optionalShort,
-});
-
-/**
- * Collected fresh at every registration — see the comment on
- * TournamentRegistration in prisma/schema.prisma for why this isn't just read
- * from the member's profile. Everything except the note officers might want is
- * required: policy is a two-person event, and officers need working contact
- * information and a partner to actually enter the team.
- */
 const phoneNumberSchema = z
   .string()
   .trim()
   .min(7, "Enter a phone number.")
   .max(30)
   .regex(/^[0-9+()\-.\s]+$/, "Use only digits and phone punctuation.");
+
+/**
+ * Blank or omitted means "clear this field"; anything else must be a real
+ * address. The service writes `undefined` as null, so the profile form always
+ * sends every field.
+ */
+const optionalEmail = z
+  .string()
+  .trim()
+  .max(200)
+  .optional()
+  .transform((v) => v || undefined)
+  .pipe(z.email("Enter a valid email address.").optional());
+
+const optionalPhone = z
+  .string()
+  .trim()
+  .optional()
+  .transform((v) => v || undefined)
+  .pipe(phoneNumberSchema.optional());
+
+/**
+ * Every field is optional on save, so a member can fill the form in over
+ * several visits. Which fields are *required* for a complete profile is a
+ * separate question, answered by missingProfileFields() in
+ * lib/services/profile-completion.ts — that is what drives the setup banner.
+ */
+export const updateProfileSchema = z.object({
+  contactEmail: optionalEmail,
+  tjEmail: optionalEmail,
+  phoneNumber: optionalPhone,
+  parentEmail: optionalEmail,
+  parentPhone: optionalPhone,
+  events: z.array(debateEventSchema).max(4).default([]),
+  partnerName: optionalShort,
+  nsdaMemberId: optionalShort,
+});
+
+/*
+ * Registrations: collected fresh at every registration — see the comment on
+ * TournamentRegistration in prisma/schema.prisma for why this isn't just read
+ * from the member's profile. Everything except the note officers might want is
+ * required: policy is a two-person event, and officers need working contact
+ * information and a partner to actually enter the team.
+ */
 
 export const createRegistrationSchema = z.object({
   tournamentId: idSchema,
@@ -197,7 +235,55 @@ export const newsPostSchema = z.object({
   body: longText.min(1),
   imageUrl: optionalUrl,
   status: newsStatusSchema.default("DRAFT"),
+  visibility: newsVisibilitySchema.default("PUBLIC"),
   tags: z.array(z.string().trim().min(1).max(40)).max(8).default([]),
+});
+
+export const formFieldInputSchema = z
+  .object({
+    /** Present when editing an existing question; absent for a new one. */
+    id: idSchema.optional(),
+    type: formFieldTypeSchema,
+    label: z.string().trim().min(1, "Every question needs a label.").max(300),
+    helpText: z.string().trim().max(500).optional().or(z.literal("")).transform((v) => (v ? v : undefined)),
+    required: z.boolean().default(false),
+    options: z.array(z.string().trim().min(1).max(200)).max(50).default([]),
+  })
+  .superRefine((field, ctx) => {
+    const isChoice = CHOICE_FIELD_TYPES.includes(field.type);
+    if (!isChoice) return;
+
+    // A single checkbox is legitimate ("I have permission to attend"); a
+    // multiple-choice or dropdown question with one option is not a question.
+    const minimum = field.type === "MULTI_CHOICE" ? 1 : 2;
+    if (field.options.length < minimum) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["options"],
+        message: minimum === 1 ? "Add at least one choice." : "Add at least two choices.",
+      });
+    }
+    const lowered = field.options.map((option) => option.toLowerCase());
+    if (new Set(lowered).size !== lowered.length) {
+      ctx.addIssue({ code: "custom", path: ["options"], message: "Each choice must be different." });
+    }
+  });
+
+export const formSchema = z.object({
+  title: z.string().trim().min(1, "Give the form a title.").max(200),
+  description: mediumText.optional().or(z.literal("")).transform((v) => (v ? v : undefined)),
+  status: formStatusSchema.default("DRAFT"),
+  closesAt: optionalDate,
+  fields: z.array(formFieldInputSchema).min(1, "Add at least one question.").max(50),
+});
+
+/**
+ * Shape only. Whether each answer actually fits its question — required,
+ * one of the offered choices, a real number — depends on the stored form, so
+ * that is checked in lib/services/forms.ts against the database copy.
+ */
+export const formResponseSchema = z.object({
+  answers: z.record(idSchema, z.union([z.string().max(10_000), z.array(z.string().max(200)).max(50)])),
 });
 
 export const achievementSchema = z.object({

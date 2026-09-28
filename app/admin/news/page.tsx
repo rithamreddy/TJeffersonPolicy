@@ -35,16 +35,18 @@ export default async function AdminNewsPage() {
       {posts.length === 0 ? (
         <EmptyState
           title="Nothing written yet"
-          description="Post tournament results, recruitment notices, or deadlines. Published posts appear on the public news page immediately."
+          description="Post tournament results, recruitment notices, or deadlines. Publishing a post emails it to every member and their parent or guardian."
           action={{ href: "/admin/news/new", label: "Write the first post" }}
         />
       ) : (
         <TableWrap label="News posts">
-          <Table className="min-w-[640px]">
+          <Table className="min-w-[860px]">
             <thead>
               <tr>
                 <Th>Title</Th>
                 <Th>Status</Th>
+                <Th>Audience</Th>
+                <Th>Email</Th>
                 <Th>Author</Th>
                 <Th>Published</Th>
                 <Th>Updated</Th>
@@ -63,6 +65,24 @@ export default async function AdminNewsPage() {
                     <Badge tone={post.status === "PUBLISHED" ? "good" : "warn"}>
                       {post.status === "PUBLISHED" ? "Published" : "Draft"}
                     </Badge>
+                  </Td>
+                  <Td className="whitespace-nowrap text-ink/60">
+                    {post.visibility === "MEMBERS" ? "Members only" : "Public"}
+                  </Td>
+                  <Td className="whitespace-nowrap">
+                    {post.emailedAt && post.emailRecipientCount == null ? (
+                      // Published before news emails existed; marked so it is
+                      // never offered for a surprise send to every family.
+                      <Badge tone="neutral">Predates email</Badge>
+                    ) : post.emailedAt ? (
+                      <Badge tone={post.emailError ? "warn" : "good"}>
+                        {post.emailError ? "Partly sent" : `Sent · ${post.emailRecipientCount ?? 0}`}
+                      </Badge>
+                    ) : post.status === "PUBLISHED" ? (
+                      <Badge tone="bad">Not sent</Badge>
+                    ) : (
+                      <span className="text-ink/40">—</span>
+                    )}
                   </Td>
                   <Td className="text-ink/60">{post.author?.displayName ?? "—"}</Td>
                   <Td className="whitespace-nowrap text-ink/60">{post.publishedAt ? formatDate(post.publishedAt) : "—"}</Td>

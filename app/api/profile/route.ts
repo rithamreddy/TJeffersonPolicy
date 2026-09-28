@@ -17,6 +17,10 @@ export const PATCH = withApi(async (request) => {
 
   return jsonOk({
     contactEmail: updated.contactEmail,
+    tjEmail: updated.tjEmail,
+    phoneNumber: updated.phoneNumber,
+    parentEmail: updated.parentEmail,
+    parentPhone: updated.parentPhone,
     partnerName: updated.partnerName,
     nsdaMemberId: updated.nsdaMemberId,
   });

@@ -58,7 +58,8 @@ export default function PrivacyPage() {
             </p>
             <p>
               When Ion confirms who you are, it returns your name, Ion username, school email, grade, and graduation
-              year. Those are stored so officers can tell members apart and enter the right people on Tabroom.
+              year. Those are stored so officers can tell members apart and enter the right people on Tabroom. Your
+              school email is only copied from Ion while it is blank; after that it is yours to edit.
             </p>
           </LegalSection>
 
@@ -66,12 +67,20 @@ export default function PrivacyPage() {
             <p>Once you have signed in, the site may hold:</p>
             <ul>
               <li>
-                <strong>From Ion:</strong> name, Ion username, school email address, grade, graduation year. These
-                refresh each time you sign in.
+                <strong>From Ion:</strong> name, Ion username, grade, and graduation year, which refresh each time you
+                sign in, and your school email, which is filled in once.
               </li>
               <li>
-                <strong>You provide:</strong> a contact email, phone number, preferred partner, NSDA member ID, and the
-                events you compete in.
+                <strong>You provide:</strong> a personal email, school email, phone number, preferred partner, NSDA
+                member ID, and the events you compete in.
+              </li>
+              <li>
+                <strong>Your parent or guardian:</strong> an email address and phone number, which you enter. Officers
+                use them for tournament travel and emergencies, and team news emails are copied to the parent address.
+              </li>
+              <li>
+                <strong>Form answers:</strong> whatever you enter in a form officers create — a permission slip, a
+                t-shirt size, your availability for a weekend.
               </li>
               <li>
                 <strong>Tournament entries:</strong> for each registration, your partner&rsquo;s name, your school and
@@ -119,6 +128,23 @@ export default function PrivacyPage() {
             <p>There are no advertising networks, no social media pixels, and no session-recording tools on this site.</p>
           </LegalSection>
 
+          <LegalSection title="Email">
+            <p>
+              When officers publish a news post, it is emailed to each active member&rsquo;s personal address (or school
+              address, if no personal one is on file) and to their parent or guardian&rsquo;s address. Each person gets
+              their own copy — no email lists every family&rsquo;s address to every other family.
+            </p>
+            <p>
+              Delivery is handled by{" "}
+              <a href="https://resend.com/legal/privacy-policy" className="legal-link" target="_blank" rel="noopener noreferrer">
+                Resend
+              </a>
+              , an email service that receives each recipient&rsquo;s address and the message in order to deliver it.
+              It is not given anything else about you. There is no automatic unsubscribe: every active member and parent
+              on file receives these. If a parent or guardian would rather not, tell an officer.
+            </p>
+          </LegalSection>
+
           <LegalSection title="Security records">
             <p>
               Administrative actions — role changes, dues updates, publishing — are written to an audit log so a mistake
@@ -137,13 +163,14 @@ export default function PrivacyPage() {
                 <strong>You</strong> see everything about yourself in the member portal.
               </li>
               <li>
-                <strong>Officers</strong> see member records, registrations, dues, and orders. That is the job — they
-                enter the squad on Tabroom and chase fees.
+                <strong>Officers</strong> see member records — including parent or guardian contact details —
+                registrations, dues, orders, and form answers. That is the job: they enter the squad on Tabroom, arrange
+                travel, and chase fees.
               </li>
               <li>
                 <strong>The public</strong> sees only the officer roster and anything an officer deliberately publishes
-                to the news or results pages. Dues, orders, registrations, phone numbers, and school email addresses are
-                never shown publicly.
+                to the public news or results pages. Members-only news posts, dues, orders, registrations, form answers,
+                phone numbers, email addresses, and parent details are never shown publicly.
               </li>
             </ul>
             <p>
@@ -159,13 +186,14 @@ export default function PrivacyPage() {
               competitive history.
             </p>
             <p>
-              You can ask an officer to delete your account. Doing so permanently removes your profile, registrations,
-              dues history, orders, and awards. Content you wrote for the team — a news post, for instance — stays up
+              You can ask an officer to delete your account. Doing so permanently removes your profile (including your
+              parent or guardian&rsquo;s details), registrations, dues history, orders, awards, and form answers. Content you wrote for the team — a news post, for instance — stays up
               but is no longer attributed to your account. Deletion cannot be undone; signing in again creates a new,
               empty account.
             </p>
             <p>
-              To correct something that came from Ion, update your Ion profile and sign in again — the site re-reads it
+              Most details, including your school email and your parent or guardian&rsquo;s, can be corrected on your
+              profile page. For your name or grade, update your Ion profile and sign in again — the site re-reads them
               each time. Anything else, ask an officer or email{" "}
               <a href={`mailto:${CLUB.email}`} className="legal-link">
                 {CLUB.email}

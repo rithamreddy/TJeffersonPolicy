@@ -72,6 +72,17 @@ const schema = z.object({
 
   /** Read-only Tabroom metadata import. Disable to turn the feature off. */
   TABROOM_IMPORT_ENABLED: booleanish(true),
+
+  /**
+   * Resend API key for news emails. Optional: when unset, publishing still
+   * works and the editor says plainly that no email was sent. On Cloudflare,
+   * set it with `wrangler secret put RESEND_API_KEY` — never in wrangler.jsonc.
+   */
+  RESEND_API_KEY: z.string().optional(),
+  /** Sender. The domain must be verified in Resend, or every send is rejected. */
+  EMAIL_FROM: z.string().default("TJ Policy Debate <news@tjpolicy.org>"),
+  /** Where replies go. Defaults to the club inbox. */
+  EMAIL_REPLY_TO: z.string().default("tjhsstpolicy1@gmail.com"),
 });
 
 function load() {

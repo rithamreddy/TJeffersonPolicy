@@ -144,3 +144,15 @@ export const IconAlert = (p: IconProps) => (
     <path d="M12 7.5v5.5M12 16.3h.01" />
   </Svg>
 );
+
+/** A checklist: two ticked boxes and one open one. Used for Forms. */
+export const IconForm = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x="3.5" y="4" width="4" height="4" />
+    <path d="m4.4 6 1 1 1.7-1.8M11 6h9.5" />
+    <rect x="3.5" y="10" width="4" height="4" />
+    <path d="m4.4 12 1 1 1.7-1.8M11 12h9.5" />
+    <rect x="3.5" y="16" width="4" height="4" />
+    <path d="M11 18h9.5" />
+  </Svg>
+);

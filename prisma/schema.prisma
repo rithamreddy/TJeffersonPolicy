@@ -36,13 +36,20 @@ model User {
   firstName      String
   lastName       String
   displayName    String
-  /// School-issued address reported by the identity provider. Never public.
+  /// School address. Seeded from Ion on first sign-in, then owned by the
+  /// member: Ion only fills it while it is empty, so an edit is never
+  /// overwritten at the next sign-in. Never public.
   tjEmail        String?
-  /// Optional address the member chooses to share with officers.
+  /// The member's personal address. News emails go here (see
+  /// lib/services/news-email.ts).
   contactEmail   String?
-  /// Cached from the most recent tournament registration, purely to pre-fill
-  /// that form next time — not treated as verified contact info anywhere.
+  /// The member's own phone. Also refreshed from their latest tournament
+  /// registration, which asks for it fresh each time.
   phoneNumber    String?
+  /// Parent or guardian contact. Officers use it for tournament logistics, and
+  /// news emails are copied to parentEmail.
+  parentEmail    String?
+  parentPhone    String?
   graduationYear Int?
   gradeNumber    Int?
   /// "MEMBER" | "OFFICER"
@@ -74,6 +81,8 @@ model User {
   auditEvents   AuditLog[]               @relation("AuditActor")
   tournaments   Tournament[]             @relation("TournamentCreator")
   duesUpdates   DuesRecord[]             @relation("DuesUpdatedBy")
+  formsCreated  Form[]                   @relation("FormCreator")
+  formResponses FormResponse[]
 
   @@index([role])
   @@index([status])
@@ -337,25 +346,40 @@ model Award {
 }
 
 model NewsPost {
-  id       String  @id @default(cuid())
-  title    String
-  slug     String  @unique
-  excerpt  String
+  id         String  @id @default(cuid())
+  title      String
+  slug       String  @unique
+  excerpt    String
   /// Markdown-subset body rendered by lib/markdown.ts (no raw HTML).
-  body     String
-  imageUrl String?
+  body       String
+  imageUrl   String?
   /// "DRAFT" | "PUBLISHED"
-  status   String  @default("DRAFT")
+  status     String  @default("DRAFT")
+  /// "PUBLIC" — on the public site and in the portal.
+  /// "MEMBERS" — portal only; never listed publicly or in the sitemap.
+  visibility String  @default("PUBLIC")
   /// JSON array of tag strings.
-  tags     String  @default("[]")
+  tags       String  @default("[]")
 
   authorId    String?
   author      User?     @relation("NewsAuthor", fields: [authorId], references: [id], onDelete: SetNull)
   publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+
+  /// Set when the email to members is claimed for sending, and kept once it
+  /// succeeds. It is the idempotency guard: a post is only ever emailed once,
+  /// however many times it is edited or re-published. Cleared again if the
+  /// send fails outright, so an officer can retry.
+  emailedAt           DateTime?
+  /// How many addresses the last send reached.
+  emailRecipientCount Int?
+  /// Why the last send failed or only partly succeeded, shown in the editor.
+  emailError          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status, publishedAt])
+  @@index([status, visibility, publishedAt])
 }
 
 model OfficerProfile {
@@ -434,4 +458,70 @@ model AuditLog {
   @@index([createdAt])
   @@index([actorId])
   @@index([targetType, targetId])
+}
+
+// ---------------------------------------------------------------------------
+// Forms
+// ---------------------------------------------------------------------------
+
+/// An officer-built form members fill in — permission slips, t-shirt sizes,
+/// availability for a tournament weekend.
+model Form {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  /// "DRAFT" — officers only. "OPEN" — members can answer. "CLOSED" — read-only.
+  status      String    @default("DRAFT")
+  /// Optional hard stop. After it passes the form behaves as CLOSED even if the
+  /// status still says OPEN, so nobody has to remember to flip it at midnight.
+  closesAt    DateTime?
+
+  createdById String?
+  createdBy   User?   @relation("FormCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  fields    FormField[]
+  responses FormResponse[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, closesAt])
+}
+
+/// One question. Answers are keyed by this row's id, which is why a form's
+/// questions are locked — apart from label and help text — once anyone has
+/// answered: deleting or retyping a question would orphan answers already given.
+model FormField {
+  id       String  @id @default(cuid())
+  formId   String
+  form     Form    @relation(fields: [formId], references: [id], onDelete: Cascade)
+  position Int
+  /// See FORM_FIELD_TYPES in lib/constants.ts.
+  type     String
+  label    String
+  helpText String?
+  required Boolean @default(false)
+  /// JSON array of choice strings, for the three choice types. "[]" otherwise.
+  options  String  @default("[]")
+
+  @@index([formId, position])
+}
+
+/// One member's answers to one form. A member has at most one response per
+/// form and may edit it until the form closes.
+model FormResponse {
+  id      String @id @default(cuid())
+  formId  String
+  form    Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// JSON object: field id → string, or string[] for checkbox questions.
+  /// Validated against the form's questions in lib/services/forms.ts.
+  answers String @default("{}")
+
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([formId, userId])
+  @@index([userId])
 }

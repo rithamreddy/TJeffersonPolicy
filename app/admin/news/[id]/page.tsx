@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card, CardBody } from "@/components/ui/Card";
 import { requireOfficerPage } from "@/lib/auth/guards";
+import { isEmailConfigured } from "@/lib/email/resend";
 import { getNewsPost, postTags } from "@/lib/services/news";
 import { formatDateTime } from "@/lib/utils/format";
 import { NewsEditor } from "../NewsEditor";
@@ -41,8 +42,13 @@ export default async function EditNewsPage({ params }: PageProps) {
             <Badge tone={post.status === "PUBLISHED" ? "good" : "warn"}>
               {post.status === "PUBLISHED" ? "Published" : "Draft"}
             </Badge>
+            {post.visibility === "MEMBERS" ? <Badge tone="info">Members only</Badge> : null}
             {post.status === "PUBLISHED" ? (
-              <ButtonLink href={`/news/${post.slug}`} size="sm" variant="outline" external>
+              <ButtonLink
+                href={post.visibility === "MEMBERS" ? `/portal/news/${post.slug}` : `/news/${post.slug}`}
+                size="sm"
+                variant="outline"
+              >
                 View live
               </ButtonLink>
             ) : null}
@@ -60,7 +66,14 @@ export default async function EditNewsPage({ params }: PageProps) {
               body: post.body,
               imageUrl: post.imageUrl ?? "",
               status: post.status,
+              visibility: post.visibility,
               tags: postTags(post).join(", "),
+            }}
+            email={{
+              emailedAt: post.emailedAt?.toISOString() ?? null,
+              recipientCount: post.emailRecipientCount,
+              error: post.emailError,
+              configured: isEmailConfigured(),
             }}
           />
         </CardBody>

@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { AppShell, type NavGroup } from "@/components/app/AppShell";
+import { ProfileSetupBanner } from "@/components/app/ProfileSetupBanner";
 import {
   IconBook,
   IconBox,
   IconCalendar,
   IconChart,
   IconClipboard,
+  IconForm,
   IconHome,
   IconNews,
   IconSettings,
@@ -65,6 +67,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       heading: "Content",
       items: [
         { href: "/admin/news", label: "News", icon: <IconNews /> },
+        { href: "/admin/forms", label: "Forms", icon: <IconForm /> },
         { href: "/admin/resources", label: "Resources", icon: <IconBook /> },
         { href: "/admin/officers", label: "Officer team", icon: <IconClipboard /> },
         { href: "/admin/settings", label: "Club settings", icon: <IconSettings /> },
@@ -86,6 +89,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       user={{ displayName: user.displayName, role: user.role, gradeNumber: user.gradeNumber }}
       crossLink={{ href: "/portal", label: "My member portal" }}
     >
+      {/* Officers are members too, and need the same details on file. */}
+      <ProfileSetupBanner user={user} />
       {children}
     </AppShell>
   );

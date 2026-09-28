@@ -20,8 +20,10 @@ export const MEMBER_STATUSES = {
 } as const;
 export type MemberStatus = keyof typeof MEMBER_STATUSES;
 
+/** Key order is display order: most to least experienced. */
 export const DEBATE_EVENTS = {
   POLICY_VARSITY: "Policy Debate — Varsity",
+  POLICY_JV: "Policy Debate — JV",
   POLICY_NOVICE: "Policy Debate — Novice",
 } as const;
 export type DebateEvent = keyof typeof DEBATE_EVENTS;
@@ -121,6 +123,33 @@ export const NEWS_STATUSES = {
   PUBLISHED: "Published",
 } as const;
 export type NewsStatus = keyof typeof NEWS_STATUSES;
+
+export const NEWS_VISIBILITIES = {
+  PUBLIC: "Public website and members",
+  MEMBERS: "Members only",
+} as const;
+export type NewsVisibility = keyof typeof NEWS_VISIBILITIES;
+
+export const FORM_STATUSES = {
+  DRAFT: "Draft",
+  OPEN: "Open",
+  CLOSED: "Closed",
+} as const;
+export type FormStatus = keyof typeof FORM_STATUSES;
+
+export const FORM_FIELD_TYPES = {
+  SHORT_TEXT: "Short answer",
+  LONG_TEXT: "Paragraph",
+  SINGLE_CHOICE: "Multiple choice",
+  MULTI_CHOICE: "Checkboxes",
+  DROPDOWN: "Dropdown",
+  NUMBER: "Number",
+  DATE: "Date",
+} as const;
+export type FormFieldType = keyof typeof FORM_FIELD_TYPES;
+
+/** Question types that need a list of choices. */
+export const CHOICE_FIELD_TYPES: readonly FormFieldType[] = ["SINGLE_CHOICE", "MULTI_CHOICE", "DROPDOWN"];
 
 /** Narrow an untrusted string from the database to a known key, with fallback. */
 export function asKey<T extends Record<string, string>>(map: T, value: string, fallback: keyof T): keyof T {

@@ -10,7 +10,7 @@
  * build clock would silently claim a review every time the site redeploys.
  * Change it by hand when the text changes.
  */
-export const LEGAL_LAST_UPDATED = "12 September 2026";
+export const LEGAL_LAST_UPDATED = "28 September 2026";
 
 export function LegalBody({ children }: { children: React.ReactNode }) {
   return <div className="legal max-w-[68ch]">{children}</div>;

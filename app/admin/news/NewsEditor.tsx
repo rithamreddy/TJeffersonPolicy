@@ -5,8 +5,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, Select, TextArea, TextInput } from "@/components/ui/Field";
 import { Alert } from "@/components/ui/States";
-import { NEWS_STATUSES } from "@/lib/constants";
+import { NEWS_STATUSES, NEWS_VISIBILITIES } from "@/lib/constants";
 import { ApiError, api } from "@/lib/client/api";
+import { formatDateTime } from "@/lib/utils/format";
 
 export interface NewsDraft {
   title: string;
@@ -14,6 +15,7 @@ export interface NewsDraft {
   body: string;
   imageUrl: string;
   status: string;
+  visibility: string;
   tags: string;
 }
 
@@ -23,8 +25,18 @@ export const emptyNewsDraft: NewsDraft = {
   body: "",
   imageUrl: "",
   status: "DRAFT",
+  visibility: "PUBLIC",
   tags: "",
 };
+
+/** Where the post's email stands. Absent on a brand-new, unsaved post. */
+export interface NewsEmailState {
+  emailedAt: string | null;
+  recipientCount: number | null;
+  error: string | null;
+  /** False when RESEND_API_KEY is not set on this deployment. */
+  configured: boolean;
+}
 
 const MARKDOWN_HELP = [
   "# Heading   ## Smaller heading",
@@ -34,7 +46,15 @@ const MARKDOWN_HELP = [
   "> quoted line",
 ].join("\n");
 
-export function NewsEditor({ postId, initial }: { postId?: string; initial: NewsDraft }) {
+export function NewsEditor({
+  postId,
+  initial,
+  email,
+}: {
+  postId?: string;
+  initial: NewsDraft;
+  email?: NewsEmailState;
+}) {
   const router = useRouter();
   const [draft, setDraft] = useState(initial);
   const [busy, setBusy] = useState(false);
@@ -60,6 +80,7 @@ export function NewsEditor({ postId, initial }: { postId?: string; initial: News
       body: draft.body,
       imageUrl: draft.imageUrl.trim() || undefined,
       status: status ?? draft.status,
+      visibility: draft.visibility,
       tags: draft.tags
         .split(",")
         .map((tag) => tag.trim())
@@ -68,9 +89,12 @@ export function NewsEditor({ postId, initial }: { postId?: string; initial: News
 
     try {
       if (postId) {
-        await api.patch(`/api/admin/news/${postId}`, payload);
+        const saved = await api.patch<{ email: string | null }>(`/api/admin/news/${postId}`, payload);
         setDraft((current) => ({ ...current, status: payload.status }));
-        setNotice(payload.status === "PUBLISHED" ? "Published. It is live on the public news page." : "Saved as a draft.");
+        const where =
+          payload.visibility === "MEMBERS" ? "It is live in the member portal." : "It is live on the public news page.";
+        const base = payload.status === "PUBLISHED" ? `Published. ${where}` : "Saved as a draft.";
+        setNotice(saved.email ? `${base} ${saved.email}` : base);
         router.refresh();
       } else {
         const created = await api.post<{ id: string }>("/api/admin/news", payload);
@@ -165,6 +189,35 @@ export function NewsEditor({ postId, initial }: { postId?: string; initial: News
           </Field>
         </div>
 
+        <Field
+          label="Who can see it"
+          hint={
+            draft.visibility === "MEMBERS"
+              ? "Shown only in the member portal. It never appears on the public website, the home page, or search results."
+              : "Shown on the public news page and in the member portal."
+          }
+        >
+          {({ id, describedBy }) => (
+            <Select id={id} aria-describedby={describedBy} value={draft.visibility} onChange={(e) => set("visibility", e.target.value)}>
+              {Object.entries(NEWS_VISIBILITIES).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </Select>
+          )}
+        </Field>
+
+        {/* Publishing sends email to real families, so say so before the click,
+            not after. Once sent, the status panel below takes over. */}
+        {!email?.emailedAt ? (
+          <Alert tone="info" title="Publishing emails this post">
+            {email && !email.configured
+              ? "Email is not set up on this deployment yet, so publishing will not send anything. Once it is, use Send email below."
+              : "The first time this post is published it is emailed to every active member and their parent or guardian. Editing it afterwards does not send it again."}
+          </Alert>
+        ) : null}
+
         <Field label="Image URL" hint="Optional. A link to an image hosted elsewhere." error={fieldErrors.imageUrl}>
           {({ id, describedBy, invalid }) => (
             <TextInput id={id} type="url" aria-describedby={describedBy} invalid={invalid} value={draft.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} />
@@ -190,6 +243,10 @@ export function NewsEditor({ postId, initial }: { postId?: string; initial: News
         </div>
       </form>
 
+      {postId && email ? (
+        <EmailStatus postId={postId} published={draft.status === "PUBLISHED"} email={email} />
+      ) : null}
+
       {postId ? (
         <div className="border border-bad/25 bg-bad-pale/50 p-5">
           <h2 className="font-display text-base font-semibold text-bad">Delete this post</h2>
@@ -211,6 +268,74 @@ export function NewsEditor({ postId, initial }: { postId?: string; initial: News
             )}
           </div>
         </div>
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * Where this post's email stands, with a manual send for the cases where the
+ * automatic one did not happen. Never offers a re-send once anything has gone
+ * out: families would get it twice.
+ */
+function EmailStatus({ postId, published, email }: { postId: string; published: boolean; email: NewsEmailState }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [failure, setFailure] = useState<string | null>(null);
+
+  async function send() {
+    setBusy(true);
+    setMessage(null);
+    setFailure(null);
+    try {
+      const result = await api.post<{ message: string | null }>(`/api/admin/news/${postId}/email`);
+      setMessage(result.message);
+      router.refresh();
+    } catch (caught) {
+      setFailure(caught instanceof ApiError ? caught.message : "Could not send the email.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // formatDateTime is pinned to the school timezone, so the server render and
+  // the browser's hydration agree. toLocaleString() would differ between them.
+  const sentOn = email.emailedAt ? formatDateTime(email.emailedAt) : null;
+
+  return (
+    <div className="space-y-4 border-2 border-rule bg-paper-raised p-6">
+      <h2 className="font-display text-sm font-bold uppercase tracking-[0.14em] text-ink">Email to members</h2>
+
+      {sentOn && email.recipientCount == null ? (
+        <p className="text-base text-ink/80">
+          This post was published before news emails were set up, so it was never emailed — and it will not be offered
+          for sending now, so old news cannot go out to every family by accident.
+        </p>
+      ) : sentOn ? (
+        <p className="text-base text-ink/80">
+          Emailed on {sentOn}
+          {email.recipientCount != null ? ` to ${email.recipientCount} address${email.recipientCount === 1 ? "" : "es"}` : ""}.
+          It will not be sent again.
+        </p>
+      ) : (
+        <p className="text-base text-ink/80">
+          {published ? "This post has not been emailed." : "Not emailed yet. It will be emailed when you publish it."}
+        </p>
+      )}
+
+      {email.error ? (
+        <Alert tone={email.emailedAt ? "warn" : "bad"} title="Last attempt">
+          {email.error}
+        </Alert>
+      ) : null}
+      {message ? <Alert tone="good">{message}</Alert> : null}
+      {failure ? <Alert tone="bad">{failure}</Alert> : null}
+
+      {published && !email.emailedAt ? (
+        <Button type="button" onClick={send} disabled={busy || !email.configured}>
+          {busy ? "Sending…" : "Send email now"}
+        </Button>
       ) : null}
     </div>
   );

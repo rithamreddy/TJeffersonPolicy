@@ -55,7 +55,10 @@ export async function upsertUserFromProfile(profile: ExternalProfile): Promise<{
         firstName: profile.firstName,
         lastName: profile.lastName,
         displayName: profile.displayName,
-        tjEmail: profile.email ?? existing.tjEmail,
+        // The school address is the member's to edit. Ion only fills it while
+        // it is empty; otherwise a correction made on the profile page would
+        // be silently reverted at the next sign-in.
+        tjEmail: existing.tjEmail || profile.email || null,
         graduationYear: profile.graduationYear ?? existing.graduationYear,
         gradeNumber: profile.gradeNumber ?? existing.gradeNumber,
         ionUserId: profile.numericId ?? existing.ionUserId,
@@ -174,15 +177,33 @@ export async function updateMemberAsOfficer(
   });
 }
 
-/** Self-service profile edit. Deliberately cannot touch role or status. */
+/**
+ * Self-service profile edit. Deliberately cannot touch role or status.
+ *
+ * Every field is written on every save — an omitted value clears the column —
+ * so the profile form must always send the whole set.
+ */
 export async function updateOwnProfile(
   userId: string,
-  data: { contactEmail?: string; events: string[]; partnerName?: string; nsdaMemberId?: string },
+  data: {
+    contactEmail?: string;
+    tjEmail?: string;
+    phoneNumber?: string;
+    parentEmail?: string;
+    parentPhone?: string;
+    events: string[];
+    partnerName?: string;
+    nsdaMemberId?: string;
+  },
 ): Promise<User> {
   return prisma.user.update({
     where: { id: userId },
     data: {
       contactEmail: data.contactEmail ?? null,
+      tjEmail: data.tjEmail ?? null,
+      phoneNumber: data.phoneNumber ?? null,
+      parentEmail: data.parentEmail ?? null,
+      parentPhone: data.parentPhone ?? null,
       events: serializeStringList(data.events),
       partnerName: data.partnerName ?? null,
       nsdaMemberId: data.nsdaMemberId ?? null,

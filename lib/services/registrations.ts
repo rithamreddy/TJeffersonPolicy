@@ -8,6 +8,7 @@
 import { prisma } from "../db";
 import { HttpError } from "../auth/guards";
 import { isRegistrationOpen } from "./tournaments";
+import { csvCell } from "../csv";
 
 /** What a member sees about their own registrations. No officer notes. */
 export async function listOwnRegistrations(userId: string) {
@@ -224,10 +225,4 @@ export function registrationsToCsv(
     ].map(csvCell).join(","),
   );
   return [header.map(csvCell).join(","), ...lines].join("\r\n");
-}
-
-function csvCell(value: string): string {
-  // Prefix formula-leading characters so a spreadsheet cannot execute a cell.
-  const guarded = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
-  return `"${guarded.replace(/"/g, '""')}"`;
 }

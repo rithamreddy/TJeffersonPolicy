@@ -2,6 +2,7 @@ import { requireOfficerApi } from "@/lib/auth/guards";
 import { jsonOk, readJson, withApi } from "@/lib/http/api";
 import { AUDIT_ACTIONS, recordAudit } from "@/lib/services/audit";
 import { saveNewsPost } from "@/lib/services/news";
+import { describeNewsEmailOutcome, emailPostIfDue } from "@/lib/services/news-email";
 import { newsPostSchema } from "@/lib/validation/schemas";
 
 export const POST = withApi(async (request) => {
@@ -16,8 +17,14 @@ export const POST = withApi(async (request) => {
     targetType: "news",
     targetId: post.id,
     summary: `${actor.displayName} created the post "${post.title}" (${post.status.toLowerCase()})`,
-    metadata: { status: post.status },
+    metadata: { status: post.status, visibility: post.visibility },
   });
 
-  return jsonOk({ id: post.id, slug: post.slug, status: post.status }, 201);
+  // A post can be created already published, so this path sends too.
+  const email = post.status === "PUBLISHED" ? await emailPostIfDue(post.id, actor) : null;
+
+  return jsonOk(
+    { id: post.id, slug: post.slug, status: post.status, email: email ? describeNewsEmailOutcome(email) : null },
+    201,
+  );
 });

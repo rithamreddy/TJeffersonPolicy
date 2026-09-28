@@ -1,7 +1,13 @@
 /**
- * News publishing. Drafts are visible only to officers; the public list and
- * the public post route both filter on status and publishedAt, so an unlisted
- * slug cannot be guessed into view.
+ * News publishing.
+ *
+ * Two independent gates decide who can read a post:
+ *   - status/publishedAt: drafts are visible only to officers.
+ *   - visibility: MEMBERS posts appear only in the signed-in portal.
+ *
+ * Every public query filters on both, so a members-only slug cannot be
+ * guessed into view on /news/[slug], and it never reaches the home page, the
+ * public list, or the sitemap.
  */
 import { prisma } from "../db";
 import { parseStringList, serializeStringList } from "../json";
@@ -16,15 +22,22 @@ const publicSelect = {
   imageUrl: true,
   tags: true,
   publishedAt: true,
+  visibility: true,
   // Surfaced as `dateModified` in the article's structured data, so a post
   // corrected after publication is not presented as untouched since.
   updatedAt: true,
   author: { select: { displayName: true, officer: { select: { position: true } } } },
 } as const;
 
+/** Live posts, before the visibility gate is applied. */
+function liveWhere() {
+  return { status: "PUBLISHED", publishedAt: { not: null, lte: new Date() } } as const;
+}
+
+/** Public site: live *and* public. */
 export async function listPublishedNews(limit?: number) {
   return prisma.newsPost.findMany({
-    where: { status: "PUBLISHED", publishedAt: { not: null, lte: new Date() } },
+    where: { ...liveWhere(), visibility: "PUBLIC" },
     select: publicSelect,
     orderBy: { publishedAt: "desc" },
     ...(limit ? { take: limit } : {}),
@@ -33,9 +46,23 @@ export async function listPublishedNews(limit?: number) {
 
 export async function getPublishedPost(slug: string) {
   return prisma.newsPost.findFirst({
-    where: { slug, status: "PUBLISHED", publishedAt: { not: null, lte: new Date() } },
+    where: { slug, ...liveWhere(), visibility: "PUBLIC" },
     select: publicSelect,
   });
+}
+
+/** Member portal: every live post, public or members-only. Callers must be signed in. */
+export async function listMemberNews(limit?: number) {
+  return prisma.newsPost.findMany({
+    where: liveWhere(),
+    select: publicSelect,
+    orderBy: { publishedAt: "desc" },
+    ...(limit ? { take: limit } : {}),
+  });
+}
+
+export async function getMemberPost(slug: string) {
+  return prisma.newsPost.findFirst({ where: { slug, ...liveWhere() }, select: publicSelect });
 }
 
 export async function listAllNews() {
@@ -56,6 +83,7 @@ export async function saveNewsPost(input: {
   body: string;
   imageUrl?: string;
   status: string;
+  visibility: string;
   tags: string[];
   authorId: string;
 }) {
@@ -72,6 +100,7 @@ export async function saveNewsPost(input: {
     body: input.body,
     imageUrl: input.imageUrl ?? null,
     status: input.status,
+    visibility: input.visibility,
     tags: serializeStringList(input.tags),
     publishedAt,
   };

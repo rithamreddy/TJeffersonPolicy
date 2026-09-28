@@ -54,10 +54,10 @@ export default async function ProfilePage() {
             <CardBody className="space-y-3 text-sm">
               <Row label="Grade" value={user.gradeNumber ? `Grade ${user.gradeNumber}` : "Not reported"} />
               <Row label="Graduation year" value={user.graduationYear?.toString() ?? "Not reported"} />
-              <Row label="School email" value={user.tjEmail ?? "Not reported"} />
               <Row label="First signed in" value={formatDate(user.firstSeenAt)} />
               <p className="border-t-2 border-rule-faint pt-3 text-base leading-relaxed text-ink/60">
-                These come from Ion and refresh each time you sign in. To correct them, update your Ion profile.
+                These come from Ion and refresh each time you sign in. To correct them, update your Ion profile. Your
+                school email is edited on the right.
               </p>
             </CardBody>
           </Card>
@@ -91,6 +91,10 @@ export default async function ProfilePage() {
               <ProfileForm
                 initial={{
                   contactEmail: user.contactEmail ?? "",
+                  tjEmail: user.tjEmail ?? "",
+                  phoneNumber: user.phoneNumber ?? "",
+                  parentEmail: user.parentEmail ?? "",
+                  parentPhone: user.parentPhone ?? "",
                   events: userEvents(user),
                   partnerName: user.partnerName ?? "",
                   nsdaMemberId: user.nsdaMemberId ?? "",
@@ -100,8 +104,8 @@ export default async function ProfilePage() {
           </Card>
 
           <Alert tone="info" title="What is private">
-            Your dues status, orders, registrations, and school email are visible only to you and the officer team. They
-            are never shown on the public site. The public officers page lists only people who have an officer profile,
+            Your contact details, your parent or guardian&rsquo;s details, dues, orders, registrations, and form answers are
+            visible only to you and the officer team. They are never shown on the public site. The public officers page lists only people who have an officer profile,
             with the contact address they chose to publish.
           </Alert>
         </div>

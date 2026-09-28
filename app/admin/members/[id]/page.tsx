@@ -68,12 +68,22 @@ export default async function MemberDetailPage({ params }: PageProps) {
               <Avatar name={member.displayName} size="xl" />
               <div className="min-w-0">
                 <p className="font-display text-lg font-semibold text-ink">{member.displayName}</p>
-                <p className="mt-1.5 truncate text-base text-ink/60">{member.tjEmail ?? "No school email on record"}</p>
-                {member.contactEmail ? (
-                  <p className="truncate text-base text-ink/60">{member.contactEmail}</p>
-                ) : null}
-                {member.phoneNumber ? <p className="truncate text-base text-ink/60">{member.phoneNumber}</p> : null}
+                <p className="mt-1.5 truncate text-base text-ink/60">{member.ionUsername}</p>
               </div>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Contact</CardTitle>
+            </CardHeader>
+            <CardBody className="space-y-3 text-sm">
+              <ContactRow label="Personal email" value={member.contactEmail} href={member.contactEmail ? `mailto:${member.contactEmail}` : undefined} />
+              <ContactRow label="School email" value={member.tjEmail} href={member.tjEmail ? `mailto:${member.tjEmail}` : undefined} />
+              <ContactRow label="Phone" value={member.phoneNumber} href={member.phoneNumber ? `tel:${member.phoneNumber}` : undefined} />
+              <div className="border-t-2 border-rule-faint pt-3" />
+              <ContactRow label="Parent email" value={member.parentEmail} href={member.parentEmail ? `mailto:${member.parentEmail}` : undefined} />
+              <ContactRow label="Parent phone" value={member.parentPhone} href={member.parentPhone ? `tel:${member.parentPhone}` : undefined} />
             </CardBody>
           </Card>
 
@@ -252,6 +262,22 @@ function Row({ label, value }: { label: string; value: string }) {
     <div className="flex items-baseline justify-between gap-6">
       <span className="shrink-0 text-ink/60">{label}</span>
       <span className="min-w-0 text-right font-medium text-ink">{value}</span>
+    </div>
+  );
+}
+
+/** A contact detail, linked when present and flagged plainly when missing. */
+function ContactRow({ label, value, href }: { label: string; value: string | null; href?: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-6">
+      <span className="shrink-0 text-ink/60">{label}</span>
+      {value ? (
+        <a href={href} className="min-w-0 truncate text-right font-medium text-navy-600 hover:text-navy-500">
+          {value}
+        </a>
+      ) : (
+        <span className="text-right text-ink/40">Not provided</span>
+      )}
     </div>
   );
 }

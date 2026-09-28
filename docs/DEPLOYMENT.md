@@ -20,12 +20,38 @@ background workers, no queue, and no object storage.
 | `TABROOM_IMPORT_ENABLED`      | no                  | `false` switches off the read-only Tabroom lookup.                    |
 | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`| no                  | Domain as registered in Plausible, e.g. `tjpolicy.org`. Unset ⇒ no analytics script is loaded at all, which keeps local and preview traffic out of the numbers. |
 | `NEXT_PUBLIC_PLAUSIBLE_SRC`   | no                  | Only for a self-hosted Plausible/Umami. Its origin is added to the CSP automatically by `proxy.ts`. |
+| `RESEND_API_KEY`              | for news emails     | **Secret** — `npx wrangler secret put RESEND_API_KEY`, never a var in `wrangler.jsonc`. Unset ⇒ posts publish but are not emailed. |
+| `EMAIL_FROM`                  | no                  | Defaults to `TJ Policy Debate <news@tjpolicy.org>`. The domain must be verified in Resend. |
+| `EMAIL_REPLY_TO`              | no                  | Defaults to the club inbox.                                           |
 
 `lib/env.ts` validates all of these at startup and fails with a specific
 message, so a misconfigured deploy stops immediately instead of half-working.
 The production-only assertions are skipped during `next build` — building is not
 serving, and a developer compiling locally has no reason to hold the production
 Ion secrets.
+
+## News email (Resend)
+
+Publishing a post emails it — once, on first publish — to every active member's
+personal address (school address if they gave none) and their parent's
+address. To turn it on:
+
+1. Create a Resend account and add the domain `tjpolicy.org`. Resend shows a
+   few DNS records (SPF, DKIM); add them in the Cloudflare DNS dashboard and wait
+   for Resend to mark the domain verified. Until then every send is rejected.
+2. Create an API key with **sending access only**, then
+   `npx wrangler secret put RESEND_API_KEY` and paste it.
+3. Publish a test post. The editor reports how many addresses it reached; a
+   failure is shown there with the reason, and **Send email now** retries.
+
+**Volume.** Every member plus a parent is roughly two emails per member per
+post. Resend's free tier allows 100 a day and 3,000 a month, so a team of more
+than ~50 will exceed the free daily cap on a single post. When a batch is
+refused the editor says so; the Pro plan removes the daily cap.
+
+Posts that were already published before this feature was deployed are marked
+as "predates email" and are never offered for sending, so old news cannot go to
+every family by accident.
 
 ## Cost controls
 

@@ -15,6 +15,8 @@ export class HttpError extends Error {
     readonly status: number,
     message: string,
     readonly code = "error",
+    /** Per-field messages, keyed like zod issue paths, for the form to show inline. */
+    readonly fields?: Record<string, string>,
   ) {
     super(message);
     this.name = "HttpError";

@@ -54,7 +54,7 @@ export function withApi(handler: Handler, options: WithApiOptions = {}): Handler
 
 export function toErrorResponse(error: unknown): NextResponse {
   if (error instanceof HttpError) {
-    return jsonError(error.status, error.code, error.message);
+    return jsonError(error.status, error.code, error.message, error.fields);
   }
 
   if (error instanceof z.ZodError) {
