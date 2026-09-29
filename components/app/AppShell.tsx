@@ -91,6 +91,9 @@ export function AppShell({
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     aria-current={active ? "page" : undefined}
+                    // Lets the onboarding tour find and highlight this item
+                    // without the shell needing to know the tour exists.
+                    data-nav-href={item.href}
                     className={cn(
                       "flex min-h-[48px] items-center gap-3.5 border-l-4 px-4 font-display text-[13px] font-bold uppercase tracking-[0.08em] transition-colors",
                       active
@@ -138,7 +141,7 @@ export function AppShell({
   return (
     <div className="min-h-screen bg-paper">
       {/* Sidebar — fixed on desktop, off-canvas on small screens. */}
-      <aside className="on-dark fixed inset-y-0 left-0 z-40 hidden w-72 flex-col bg-navy-900 lg:flex">
+      <aside data-app-sidebar className="on-dark fixed inset-y-0 left-0 z-40 hidden w-72 flex-col bg-navy-900 lg:flex">
         <div className="c-grid-texture pointer-events-none absolute inset-0" aria-hidden="true" />
         <div className="relative flex min-h-0 flex-1 flex-col">
           <SidebarHeader area={area} />

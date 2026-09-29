@@ -65,6 +65,12 @@ model User {
   partnerName    String?
   pictureUrl     String?
 
+  /// Onboarding. Both start empty for everyone — existing members included —
+  /// so every member sees the welcome tour once and the getting-started
+  /// checklist until it is finished or dismissed. See lib/services/onboarding.ts.
+  onboardingTourCompletedAt      DateTime?
+  onboardingChecklistDismissedAt DateTime?
+
   firstSeenAt DateTime  @default(now())
   lastLoginAt DateTime?
   createdAt   DateTime  @default(now())

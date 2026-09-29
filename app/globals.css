@@ -450,6 +450,38 @@
 }
 
 /* ==========================================================================
+   Onboarding tour — components/app/OnboardingTour.tsx
+   ========================================================================== */
+
+@layer components {
+  .c-tour::backdrop {
+    background: rgb(7 13 33 / 0.72);
+  }
+
+  /* On desktop the backdrop stops at the sidebar's edge (w-72 = 18rem), so
+     the item each step describes stays visible and outlined rather than
+     dimmed out. The sidebar is still inert behind the modal; it is only
+     shown, not clickable. */
+  @media (min-width: 1024px) {
+    .c-tour::backdrop {
+      left: 18rem;
+    }
+  }
+
+  /* The page should not scroll underneath an open tour. */
+  html:has(.c-tour[open]) {
+    overflow: hidden;
+  }
+
+  [data-tour-highlight] {
+    outline: 3px solid var(--color-signal-bright);
+    outline-offset: -3px;
+    background: rgb(255 255 255 / 0.14);
+    color: #fff;
+  }
+}
+
+/* ==========================================================================
    Legal documents — privacy and terms
    ========================================================================== */
 

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { GettingStarted } from "@/components/app/GettingStarted";
+import { OnboardingTour } from "@/components/app/OnboardingTour";
 import { PageHeading, StatTile } from "@/components/app/PageHeading";
 import { Badge, DuesBadge, NsdaBadge, RegistrationBadge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
@@ -8,6 +10,8 @@ import { IconBook, IconBox, IconTicket, IconWallet } from "@/components/ui/Icons
 import { requireUserPage } from "@/lib/auth/guards";
 import { DEBATE_EVENTS, currentSeasonYear, labelFor, seasonLabel } from "@/lib/constants";
 import { getOwnDues } from "@/lib/services/dues";
+import { checklistVisible, getChecklist } from "@/lib/services/onboarding";
+import { missingProfileFields } from "@/lib/services/profile-completion";
 import { listOwnRegistrations } from "@/lib/services/registrations";
 import { getSettings } from "@/lib/services/settings";
 import { listTournamentsForMembers } from "@/lib/services/tournaments";
@@ -16,12 +20,12 @@ import { prisma } from "@/lib/db";
 import { formatDateRange, formatMoney, formatRelative } from "@/lib/utils/format";
 
 interface PageProps {
-  searchParams: Promise<{ denied?: string }>;
+  searchParams: Promise<{ denied?: string; tour?: string }>;
 }
 
 export default async function PortalDashboard({ searchParams }: PageProps) {
   const user = await requireUserPage("/portal");
-  const { denied } = await searchParams;
+  const { denied, tour } = await searchParams;
   const season = currentSeasonYear();
 
   const [dues, registrations, upcoming, awards, settings] = await Promise.all([
@@ -32,6 +36,12 @@ export default async function PortalDashboard({ searchParams }: PageProps) {
     getSettings(),
   ]);
 
+  // Onboarding: the tour opens once for everyone who has not finished or
+  // skipped it, and again on demand via ?tour=1 (the checklist links there).
+  const checklist = await getChecklist(user);
+  const showChecklist = checklistVisible(checklist, Boolean(user.onboardingChecklistDismissedAt));
+  const showTour = !user.onboardingTourCompletedAt || tour === "1";
+
   const events = userEvents(user);
   const activeRegistrations = registrations.filter((r) => r.status === "PENDING" || r.status === "REGISTERED");
   const nextTournament = upcoming[0];
@@ -41,6 +51,15 @@ export default async function PortalDashboard({ searchParams }: PageProps) {
 
   return (
     <>
+      {showTour ? (
+        <OnboardingTour
+          // Remounting on ?tour=1 restarts a replay from the first step.
+          key={tour ?? "first-visit"}
+          firstName={user.firstName}
+          profileComplete={missingProfileFields(user).length === 0}
+        />
+      ) : null}
+
       {denied === "officer" ? (
         <div className="mb-6">
           <Alert tone="warn" title="Officers only">
@@ -65,6 +84,14 @@ export default async function PortalDashboard({ searchParams }: PageProps) {
           </>
         }
       />
+
+      {showChecklist ? (
+        <GettingStarted
+          tasks={checklist}
+          facebookUrl={settings["social.facebook"]}
+          discordUrl={settings["social.discord"]}
+        />
+      ) : null}
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <StatTile
