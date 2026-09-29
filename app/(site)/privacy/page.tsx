@@ -57,9 +57,9 @@ export default function PrivacyPage() {
               never store it.
             </p>
             <p>
-              When Ion confirms who you are, it returns your name, Ion username, school email, grade, and graduation
-              year. Those are stored so officers can tell members apart and enter the right people on Tabroom. Your
-              school email is only copied from Ion while it is blank; after that it is yours to edit.
+              When Ion confirms who you are, it returns your name, Ion username, grade, and graduation year. Those
+              are stored so officers can tell members apart and enter the right people on Tabroom. Ion also reports
+              an Ion email address; the site does not store it — your school email is one you enter yourself.
             </p>
           </LegalSection>
 
@@ -68,7 +68,7 @@ export default function PrivacyPage() {
             <ul>
               <li>
                 <strong>From Ion:</strong> name, Ion username, grade, and graduation year, which refresh each time you
-                sign in, and your school email, which is filled in once.
+                sign in.
               </li>
               <li>
                 <strong>You provide:</strong> a personal email, school email, phone number, preferred partner, NSDA

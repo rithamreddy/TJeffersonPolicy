@@ -55,10 +55,9 @@ export async function upsertUserFromProfile(profile: ExternalProfile): Promise<{
         firstName: profile.firstName,
         lastName: profile.lastName,
         displayName: profile.displayName,
-        // The school address is the member's to edit. Ion only fills it while
-        // it is empty; otherwise a correction made on the profile page would
-        // be silently reverted at the next sign-in.
-        tjEmail: existing.tjEmail || profile.email || null,
+        // tjEmail is deliberately not touched here. Ion reports an
+        // @tjhsst.edu mailbox the team does not use, so the school address is
+        // entered by the member on their profile and never taken from Ion.
         graduationYear: profile.graduationYear ?? existing.graduationYear,
         gradeNumber: profile.gradeNumber ?? existing.gradeNumber,
         ionUserId: profile.numericId ?? existing.ionUserId,
@@ -78,7 +77,8 @@ export async function upsertUserFromProfile(profile: ExternalProfile): Promise<{
       firstName: profile.firstName,
       lastName: profile.lastName,
       displayName: profile.displayName,
-      tjEmail: profile.email ?? null,
+      // Left empty on purpose — see the note in the update branch above.
+      tjEmail: null,
       graduationYear: profile.graduationYear ?? null,
       gradeNumber: profile.gradeNumber ?? null,
       role: listed ? "OFFICER" : "MEMBER",

@@ -36,9 +36,8 @@ model User {
   firstName      String
   lastName       String
   displayName    String
-  /// School address. Seeded from Ion on first sign-in, then owned by the
-  /// member: Ion only fills it while it is empty, so an edit is never
-  /// overwritten at the next sign-in. Never public.
+  /// School address, entered by the member on their profile. Never taken from
+  /// Ion: Ion reports an @tjhsst.edu mailbox the team does not use. Never public.
   tjEmail        String?
   /// The member's personal address. News emails go here (see
   /// lib/services/news-email.ts).

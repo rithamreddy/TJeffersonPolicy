@@ -124,7 +124,7 @@ export function ProfileForm({ initial }: { initial: ProfileFormValues }) {
           label: "School email",
           type: "email",
           required: true,
-          hint: "Filled in from Ion the first time you sign in. Change it if it's wrong — Ion won't overwrite your edit.",
+          hint: "The school address you actually use — not your Ion (@tjhsst.edu) address, which the team doesn't use.",
         })}
         {text("phoneNumber", {
           label: "Phone number",
