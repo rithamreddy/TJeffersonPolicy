@@ -105,13 +105,17 @@ export function TournamentForm({
     setFieldErrors({});
     setNotice(null);
 
+    // The "Publish" button submits the same form but opens registration.
+    const publishing = (event.nativeEvent as SubmitEvent).submitter?.getAttribute("value") === "publish";
+    const status = publishing ? "OPEN" : draft.status;
+
     const payload = {
       name: draft.name.trim(),
       startDate: wallClockToIso(draft.startDate),
       endDate: wallClockToIso(draft.endDate),
       location: draft.location.trim(),
       circuit: draft.circuit,
-      status: draft.status,
+      status,
       registrationOpensAt: wallClockToIso(draft.registrationOpensAt),
       registrationDeadline: wallClockToIso(draft.registrationDeadline),
       description: draft.description.trim() || undefined,
@@ -144,8 +148,9 @@ export function TournamentForm({
             `Kept ${result.keptDivisions.join(", ")} because ${result.keptDivisions.length === 1 ? "it has" : "they have"} registrations. Withdraw those entries first if you really need to remove ${result.keptDivisions.length === 1 ? "it" : "them"}.`,
           );
         } else {
-          setNotice("Saved.");
+          setNotice(publishing ? "Published. Members can now register." : "Saved.");
         }
+        set("status", status);
         router.refresh();
       }
     } catch (caught) {
@@ -370,8 +375,13 @@ export function TournamentForm({
       </section>
 
       <div className="flex flex-wrap gap-2 border-t-2 border-rule-faint pt-5">
-        <Button type="submit" disabled={busy}>
-          {busy ? "Saving…" : mode === "create" ? "Create tournament" : "Save changes"}
+        {draft.status === "DRAFT" ? (
+          <Button type="submit" value="publish" disabled={busy}>
+            {busy ? "Saving…" : "Publish — open registration"}
+          </Button>
+        ) : null}
+        <Button type="submit" variant={draft.status === "DRAFT" ? "outline" : "primary"} disabled={busy}>
+          {busy ? "Saving…" : draft.status === "DRAFT" ? "Save as draft" : mode === "create" ? "Create tournament" : "Save changes"}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.push("/admin/tournaments")} disabled={busy}>
           Cancel
