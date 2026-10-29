@@ -25,7 +25,6 @@ export default async function OrdersPage() {
     <>
       <PageHeading
         title="Orders"
-        description="Team apparel, merchandise, and membership. Requests are recorded here; payment happens on MySchoolBucks or with the provider."
       />
 
       <div className="mb-6">
@@ -67,7 +66,6 @@ export default async function OrdersPage() {
           <EmptyState
             icon={<IconBox />}
             title="Nothing available at the moment"
-            description="Officers open apparel and merchandise orders when a bulk run is planned. Watch the news feed and the Facebook group."
             action={{ href: "/portal", label: "Back to dashboard" }}
           />
         ) : (
@@ -128,7 +126,6 @@ export default async function OrdersPage() {
         {orders.length === 0 ? (
           <EmptyState
             title="No orders yet"
-            description="Anything you request will show up here with its current status."
             className="py-8"
           />
         ) : (

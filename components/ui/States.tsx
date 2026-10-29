@@ -9,13 +9,11 @@ import { ButtonLink } from "./Button";
 
 export function EmptyState({
   title,
-  description,
   action,
   icon,
   className,
 }: {
   title: string;
-  description?: string;
   action?: { href: string; label: string; external?: boolean };
   icon?: React.ReactNode;
   className?: string;
@@ -31,9 +29,6 @@ export function EmptyState({
         </div>
       ) : null}
       <p className="t-h3">{title}</p>
-      {description ? (
-        <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-ink/60">{description}</p>
-      ) : null}
       {action ? (
         <div className="mt-8">
           <ButtonLink href={action.href} external={action.external} size="sm" variant="outline">

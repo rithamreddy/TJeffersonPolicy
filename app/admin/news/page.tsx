@@ -19,7 +19,6 @@ export default async function AdminNewsPage() {
     <>
       <PageHeading
         title="News"
-        description="Announcements, results, and deadlines. Drafts are invisible to everyone but officers."
         actions={
           <>
             <ButtonLink href="/admin/news/new" size="sm">
@@ -35,7 +34,6 @@ export default async function AdminNewsPage() {
       {posts.length === 0 ? (
         <EmptyState
           title="Nothing written yet"
-          description="Post tournament results, recruitment notices, or deadlines. Publishing a post emails it to every member and their parent or guardian."
           action={{ href: "/admin/news/new", label: "Write the first post" }}
         />
       ) : (

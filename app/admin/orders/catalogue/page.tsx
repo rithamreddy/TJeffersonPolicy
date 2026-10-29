@@ -34,7 +34,6 @@ export default async function CataloguePage() {
 
       <PageHeading
         title="Order catalogue"
-        description="What members can request from the portal. Use Remove to take a listing down for good — it deletes cleanly if nothing has been ordered, or archives it (hiding it from members) if orders already reference it."
       />
 
       <div className="mb-5">

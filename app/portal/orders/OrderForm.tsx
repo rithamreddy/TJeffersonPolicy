@@ -95,7 +95,7 @@ export function OrderForm({ itemId, itemName, sizes }: { itemId: string; itemNam
         ) : null}
       </div>
 
-      <Field label="Note for officers" hint="Optional.">
+      <Field label="Note for officers">
         {({ id }) => (
           <TextArea
             id={id}

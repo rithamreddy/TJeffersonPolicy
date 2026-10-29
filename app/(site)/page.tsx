@@ -153,7 +153,6 @@ export default async function HomePage() {
             {featured.length === 0 ? (
               <EmptyState
                 title="Results are being compiled"
-                description="The officer team is entering the season's results. Follow along on the record page or in the news feed."
                 action={{ href: "/news", label: "Read the latest news" }}
               />
             ) : (
@@ -318,7 +317,6 @@ export default async function HomePage() {
           {news.length === 0 ? (
             <EmptyState
               title="No announcements yet"
-              description="Tournament results, recruitment notices, and deadlines will be posted here once officers publish the first update."
               action={{ href: "/join", label: "Join the team" }}
             />
           ) : (

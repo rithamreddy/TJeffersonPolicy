@@ -172,7 +172,6 @@ export default async function MemberDetailPage({ params }: PageProps) {
                 {member.registrations.length === 0 ? (
                   <EmptyState
                     title="No registrations"
-                    description="This member has not entered a tournament yet."
                     className="border-0 bg-transparent py-6"
                   />
                 ) : (

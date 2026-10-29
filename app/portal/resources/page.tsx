@@ -40,7 +40,6 @@ export default async function ResourcesPage() {
     <>
       <PageHeading
         title="Resources"
-        description="Evidence, case files, guides, and external references maintained by the officer team. Members only."
         actions={officer ? <ButtonLink href="/admin/resources" size="sm" variant="outline">Manage resources</ButtonLink> : undefined}
       />
 
@@ -48,11 +47,6 @@ export default async function ResourcesPage() {
         <EmptyState
           icon={<IconBook />}
           title="The library is empty"
-          description={
-            officer
-              ? "Add the team's first resource from the officer dashboard — files, links, guides, and templates all live here."
-              : "Officers have not added anything yet. Ask a teaching coordinator what to read while the library is being set up."
-          }
           action={officer ? { href: "/admin/resources", label: "Add a resource" } : { href: "/portal", label: "Back to dashboard" }}
         />
       ) : (

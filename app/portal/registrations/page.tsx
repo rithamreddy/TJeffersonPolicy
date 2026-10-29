@@ -21,13 +21,11 @@ export default async function RegistrationsPage() {
     <>
       <PageHeading
         title="My registrations"
-        description="Every event you have entered. Withdrawing removes the entry completely, so do it as early as you can if plans change — officers reallocate the slot."
       />
 
       {registrations.length === 0 ? (
         <EmptyState
           title="No registrations yet"
-          description="When you register for a tournament event it will appear here, along with whether an officer has confirmed your entry."
           action={{ href: "/portal/tournaments", label: "Browse tournaments" }}
         />
       ) : (

@@ -157,7 +157,7 @@ export function OfficerEditor({
               <Field
                 label="Member"
                 required
-                hint="Only people who have signed in at least once appear here. Saving grants them officer access."
+                hint="Saving grants officer access."
               >
                 {({ id, describedBy }) => (
                   <Select
@@ -179,7 +179,7 @@ export function OfficerEditor({
               </Field>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Position" required hint='e.g. "Captain", "Treasurer"' error={fieldErrors.position}>
+                <Field label="Position" required error={fieldErrors.position}>
                   {({ id, describedBy, invalid }) => (
                     <TextInput id={id} aria-describedby={describedBy} invalid={invalid} value={draft.position} onChange={(e) => setDraft({ ...draft, position: e.target.value })} required />
                   )}
@@ -191,7 +191,7 @@ export function OfficerEditor({
                 </Field>
                 <Field
                   label="Public email"
-                  hint="Shown on the public officers page. Use an address this officer is happy to publish — not their school email."
+                  hint="Shown publicly."
                   error={fieldErrors.publicEmail}
                 >
                   {({ id, describedBy, invalid }) => (
@@ -205,13 +205,13 @@ export function OfficerEditor({
                 </Field>
               </div>
 
-              <Field label="Biography" hint="A sentence or two for the public page." error={fieldErrors.bio}>
+              <Field label="Biography" error={fieldErrors.bio}>
                 {({ id, describedBy, invalid }) => (
                   <TextArea id={id} rows={3} aria-describedby={describedBy} invalid={invalid} value={draft.bio} onChange={(e) => setDraft({ ...draft, bio: e.target.value })} maxLength={2000} />
                 )}
               </Field>
 
-              <Field label="Photo URL" hint="Optional. Without one, a monogram is shown instead." error={fieldErrors.photoUrl}>
+              <Field label="Photo URL" error={fieldErrors.photoUrl}>
                 {({ id, describedBy, invalid }) => (
                   <TextInput id={id} type="url" aria-describedby={describedBy} invalid={invalid} value={draft.photoUrl} onChange={(e) => setDraft({ ...draft, photoUrl: e.target.value })} />
                 )}
@@ -260,7 +260,6 @@ export function OfficerEditor({
       {officers.length === 0 ? (
         <EmptyState
           title="No officer profiles yet"
-          description="Until someone is added here, the public officers page falls back to the roster carried over from the previous site. Adding a profile takes over from that."
         />
       ) : (
         <ul className="space-y-3">

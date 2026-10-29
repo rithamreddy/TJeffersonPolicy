@@ -22,14 +22,12 @@ export default async function AwardsPage() {
     <>
       <PageHeading
         title="Awards"
-        description="Individual results recorded for you by the officer team. Team-level results appear on the public achievements page."
       />
 
       {awards.length === 0 ? (
         <EmptyState
           icon={<IconTrophy />}
           title="No awards recorded yet"
-          description="Officers add awards after results are confirmed. If you placed at a tournament and it is not here, tell an officer and they can add it."
           action={{ href: "/achievements", label: "See the team record" }}
         />
       ) : (

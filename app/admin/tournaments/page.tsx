@@ -27,7 +27,6 @@ export default async function AdminTournamentsPage({ searchParams }: PageProps) 
     <>
       <PageHeading
         title="Tournaments"
-        description="Create tournaments, open and close registration, and review who has entered."
         actions={
           <>
             <ButtonLink href="/admin/tournaments/new" size="sm">
@@ -43,7 +42,6 @@ export default async function AdminTournamentsPage({ searchParams }: PageProps) 
       {tournaments.length === 0 ? (
         <EmptyState
           title="No tournaments yet"
-          description="Create the first one. You can paste a Tabroom link to prefill the dates and events, then open registration when you are ready."
           action={{ href: "/admin/tournaments/new", label: "Create a tournament" }}
         />
       ) : (

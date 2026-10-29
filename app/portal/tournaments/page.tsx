@@ -35,7 +35,6 @@ export default async function TournamentsPage({ searchParams }: PageProps) {
     <>
       <PageHeading
         title="Tournaments"
-        description="Upcoming tournaments published by the officer team. Registration here tells officers you want in — they enter the team on Tabroom."
         actions={
           <div className="flex border-2 border-rule">
             <TabLink href="/portal/tournaments" active={!showPast}>
@@ -51,11 +50,6 @@ export default async function TournamentsPage({ searchParams }: PageProps) {
       {list.length === 0 ? (
         <EmptyState
           title={showPast ? "No past tournaments recorded" : "No tournaments scheduled yet"}
-          description={
-            showPast
-              ? "Once the season gets going, completed tournaments will be listed here."
-              : "Officers publish tournaments as the schedule firms up. Check the team calendar or ask an officer what is coming."
-          }
           action={showPast ? { href: "/portal/tournaments", label: "See upcoming" } : { href: "/portal", label: "Back to dashboard" }}
         />
       ) : (

@@ -23,7 +23,6 @@ export default async function AdminFormsPage() {
     <>
       <PageHeading
         title="Forms"
-        description="Permission slips, sign-ups, sizes, availability. Open a form and every member sees it in their portal; export the answers as CSV for Google Sheets."
         actions={
           <ButtonLink href="/admin/forms/new" size="sm">
             New form
@@ -34,7 +33,6 @@ export default async function AdminFormsPage() {
       {forms.length === 0 ? (
         <EmptyState
           title="No forms yet"
-          description="Build a form, open it, and members can answer from the portal. You'll see who has and hasn't responded."
           action={{ href: "/admin/forms/new", label: "Build the first form" }}
         />
       ) : (

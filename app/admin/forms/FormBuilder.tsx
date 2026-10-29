@@ -168,7 +168,7 @@ export function FormBuilder({
             )}
           </Field>
 
-          <Field label="Description" hint="Optional. Shown to members above the questions." error={fieldErrors.description}>
+          <Field label="Description" error={fieldErrors.description}>
             {({ id, describedBy, invalid }) => (
               <TextArea
                 id={id}
@@ -185,7 +185,6 @@ export function FormBuilder({
           <div className="grid gap-5 sm:grid-cols-2">
             <Field
               label="Status"
-              hint="Members only see Open and Closed forms. Drafts are private to officers."
             >
               {({ id, describedBy }) => (
                 <Select id={id} aria-describedby={describedBy} value={draft.status} onChange={(e) => update({ status: e.target.value })}>
@@ -200,7 +199,7 @@ export function FormBuilder({
 
             <Field
               label="Closes at"
-              hint="Optional, Eastern time. After this the form stops taking answers even if it is still marked Open."
+              hint="Eastern time."
               error={fieldErrors.closesAt}
             >
               {({ id, describedBy, invalid }) => (
@@ -337,7 +336,7 @@ export function FormBuilder({
                     </Field>
                   ) : null}
 
-                  <Field className="mt-5" label="Help text" hint="Optional. Shown under the question." error={err("helpText")}>
+                  <Field className="mt-5" label="Help text" error={err("helpText")}>
                     {({ id, describedBy, invalid }) => (
                       <TextInput
                         id={id}

@@ -177,7 +177,7 @@ export function CatalogueEditor({ items }: { items: CatalogueItem[] }) {
                     </Select>
                   )}
                 </Field>
-                <Field label="Price (USD)" hint="Leave blank if the price is not fixed yet." error={fieldErrors.priceCents}>
+                <Field label="Price (USD)" error={fieldErrors.priceCents}>
                   {({ id, describedBy, invalid }) => (
                     <TextInput id={id} type="number" min="0" step="0.01" aria-describedby={describedBy} invalid={invalid} value={draft.price} onChange={(e) => setDraft({ ...draft, price: e.target.value })} />
                   )}
@@ -195,19 +195,19 @@ export function CatalogueEditor({ items }: { items: CatalogueItem[] }) {
                 )}
               </Field>
 
-              <Field label="Sizes" hint="Comma separated, e.g. S, M, L, XL. Leave blank for items without sizes.">
+              <Field label="Sizes" hint="Comma separated.">
                 {({ id, describedBy }) => (
                   <TextInput id={id} aria-describedby={describedBy} value={draft.sizes} onChange={(e) => setDraft({ ...draft, sizes: e.target.value })} />
                 )}
               </Field>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Payment link" hint="Where members go to pay, e.g. your MySchoolBucks store." error={fieldErrors.externalUrl}>
+                <Field label="Payment link" error={fieldErrors.externalUrl}>
                   {({ id, describedBy, invalid }) => (
                     <TextInput id={id} type="url" aria-describedby={describedBy} invalid={invalid} value={draft.externalUrl} onChange={(e) => setDraft({ ...draft, externalUrl: e.target.value })} />
                   )}
                 </Field>
-                <Field label="Payment link label" hint='e.g. "Pay on MySchoolBucks"'>
+                <Field label="Payment link label">
                   {({ id, describedBy }) => (
                     <TextInput id={id} aria-describedby={describedBy} value={draft.externalLabel} onChange={(e) => setDraft({ ...draft, externalLabel: e.target.value })} />
                   )}
@@ -236,7 +236,6 @@ export function CatalogueEditor({ items }: { items: CatalogueItem[] }) {
       {items.length === 0 ? (
         <EmptyState
           title="Nothing in the catalogue"
-          description="Add an item so members have something to order from the portal."
         />
       ) : (
         <ul className="space-y-3">

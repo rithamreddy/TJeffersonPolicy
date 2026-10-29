@@ -66,13 +66,6 @@ export default async function AdminTournamentDetailPage({ params }: PageProps) {
           {tournament.registrations.length === 0 ? (
             <EmptyState
               title="Nobody has registered yet"
-              description={
-                tournament.status === "OPEN"
-                  ? "Registration is open — entries will appear here as members sign up."
-                  : tournament.status === "DRAFT"
-                    ? "This is still a draft. Press “Publish — open registration” at the bottom of the form below so members can enter."
-                    : "Set the visibility to “Registration open” so members can enter."
-              }
               className="border-0 bg-transparent py-6"
             />
           ) : (

@@ -146,7 +146,7 @@ export function MemberControls({
           )}
         </Field>
 
-        <Field label="Grade" hint="Normally taken from Ion. Override only if it is wrong.">
+        <Field label="Grade">
           {({ id, describedBy }) => (
             <Select
               id={id}

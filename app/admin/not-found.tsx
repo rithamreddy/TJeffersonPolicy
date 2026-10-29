@@ -7,7 +7,6 @@ export default function AdminNotFound() {
       <PageHeading title="Not found" />
       <EmptyState
         title="We could not find that"
-        description="The record may have been deleted, or the link may be stale."
         action={{ href: "/admin", label: "Back to the dashboard" }}
       />
     </>

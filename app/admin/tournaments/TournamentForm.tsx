@@ -177,11 +177,6 @@ export function TournamentForm({
       {/* Tabroom import — a convenience, never a dependency. */}
       <section className="border-2 border-rule-faint bg-paper-sunk p-5">
         <h2 className="font-display text-base font-semibold text-ink">Prefill from Tabroom</h2>
-        <p className="mt-1.5 text-base leading-relaxed text-ink/60">
-          Paste a tabroom.com tournament link (one with <code className="rounded bg-white px-1 py-0.5 text-sm">tourn_id</code> in
-          the address) or the numeric id. This reads Tabroom&rsquo;s public tournament data and fills the form in — it does not
-          enter the team. You still register the squad on Tabroom yourself.
-        </p>
 
         <div className="mt-4 flex flex-wrap gap-2">
           <input
@@ -254,7 +249,7 @@ export function TournamentForm({
         <h2 className="font-display text-base font-semibold text-ink">Registration</h2>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Visibility" hint="Draft is officer-only. Open accepts member registrations.">
+          <Field label="Visibility">
             {({ id, describedBy }) => (
               <Select id={id} aria-describedby={describedBy} value={draft.status} onChange={(e) => set("status", e.target.value)}>
                 {Object.entries(TOURNAMENT_STATUSES).map(([value, label]) => (
@@ -265,7 +260,7 @@ export function TournamentForm({
               </Select>
             )}
           </Field>
-          <Field label="Registration deadline" hint="After this, members can no longer register." error={fieldErrors.registrationDeadline}>
+          <Field label="Registration deadline" error={fieldErrors.registrationDeadline}>
             {({ id, describedBy, invalid }) => (
               <TextInput
                 id={id}
@@ -279,13 +274,13 @@ export function TournamentForm({
           </Field>
         </div>
 
-        <Field label="External registration link" hint="Optional. Somewhere members need to go as well, e.g. a school form." error={fieldErrors.externalRegistrationUrl}>
+        <Field label="External registration link" error={fieldErrors.externalRegistrationUrl}>
           {({ id, describedBy, invalid }) => (
             <TextInput id={id} type="url" aria-describedby={describedBy} invalid={invalid} value={draft.externalRegistrationUrl} onChange={(e) => set("externalRegistrationUrl", e.target.value)} />
           )}
         </Field>
 
-        <Field label="Tabroom link" hint="Shown to members so they can see pairings and results." error={fieldErrors.tabroomUrl}>
+        <Field label="Tabroom link" error={fieldErrors.tabroomUrl}>
           {({ id, describedBy, invalid }) => (
             <TextInput id={id} type="url" aria-describedby={describedBy} invalid={invalid} value={draft.tabroomUrl} onChange={(e) => set("tabroomUrl", e.target.value)} />
           )}
@@ -304,7 +299,6 @@ export function TournamentForm({
             Add event
           </Button>
         </div>
-        <p className="text-base text-ink/60">Members choose one of these when they register. At least one is required.</p>
 
         {fieldErrors.divisions ? <Alert tone="bad">{fieldErrors.divisions}</Alert> : null}
 
@@ -349,25 +343,25 @@ export function TournamentForm({
       <section className="space-y-4">
         <h2 className="font-display text-base font-semibold text-ink">Notes</h2>
 
-        <Field label="Description" hint="Shown to members on the tournament page.">
+        <Field label="Description">
           {({ id, describedBy }) => (
             <TextArea id={id} aria-describedby={describedBy} rows={3} value={draft.description} onChange={(e) => set("description", e.target.value)} maxLength={2000} />
           )}
         </Field>
 
-        <Field label="Eligibility" hint="Who can enter — experience level, grade, qualification requirements.">
+        <Field label="Eligibility">
           {({ id, describedBy }) => (
             <TextArea id={id} aria-describedby={describedBy} rows={2} value={draft.eligibility} onChange={(e) => set("eligibility", e.target.value)} maxLength={2000} />
           )}
         </Field>
 
-        <Field label="Note to members" hint="Highlighted on the member-facing page — travel, timing, what to bring.">
+        <Field label="Note to members">
           {({ id, describedBy }) => (
             <TextArea id={id} aria-describedby={describedBy} rows={2} value={draft.memberNotes} onChange={(e) => set("memberNotes", e.target.value)} maxLength={2000} />
           )}
         </Field>
 
-        <Field label="Officer notes" hint="Officers only. Never shown to members or on the public site.">
+        <Field label="Officer notes" hint="Never shown to members.">
           {({ id, describedBy }) => (
             <TextArea id={id} aria-describedby={describedBy} rows={2} value={draft.officerNotes} onChange={(e) => set("officerNotes", e.target.value)} maxLength={2000} />
           )}

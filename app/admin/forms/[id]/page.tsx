@@ -76,11 +76,6 @@ export default async function AdminFormPage({ params }: PageProps) {
               <EmptyState
                 className="border-0 bg-transparent py-8"
                 title={form.status === "DRAFT" ? "Not open yet" : "No responses yet"}
-                description={
-                  form.status === "DRAFT"
-                    ? "Set the status to Open below and members will see this form in their portal."
-                    : "Answers appear here as members submit them."
-                }
               />
             ) : (
               <TableWrap label={`Responses to ${form.title}`} className="border-0">

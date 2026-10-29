@@ -1,9 +1,9 @@
 # Graph Report - TJeffersonPolicy  (2026-10-28)
 
 ## Corpus Check
-- 218 files · ~114,602 words
+- 218 files · ~121,143 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 12 file(s) not represented in the graph (top: (none) 6, .example 1, .ico 1)
+- Unclassified: 13 file(s) not represented in the graph (top: (none) 6, .example 1, .log 1)
 
 ## Summary
 - 1221 nodes · 4630 edges · 56 communities (48 shown, 8 thin omitted)
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f7e6a904`
+- Built from commit: `cc3e4079`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

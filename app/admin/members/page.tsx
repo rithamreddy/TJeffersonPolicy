@@ -44,7 +44,7 @@ export default async function AdminMembersPage({ searchParams }: PageProps) {
     <>
       <PageHeading
         title="Members"
-        description={`Everyone who has signed in. Dues shown for the ${seasonLabel(season)} season.`}
+        description={`${seasonLabel(season)} season`}
       />
 
       <FilterBar
@@ -72,7 +72,6 @@ export default async function AdminMembersPage({ searchParams }: PageProps) {
       {visible.length === 0 ? (
         <EmptyState
           title="No members match"
-          description="Members appear here the first time they sign in with Ion. Adjust the filters, or share the sign-in link with the squad."
           action={{ href: "/admin/members", label: "Clear filters" }}
         />
       ) : (

@@ -134,7 +134,7 @@ export function RegisterForm({
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Partner" required hint="Policy is a two-person event." error={fieldErrors.partnerName}>
+        <Field label="Partner" required error={fieldErrors.partnerName}>
           {({ id, describedBy, invalid }) => (
             <TextInput
               id={id}
@@ -180,7 +180,7 @@ export function RegisterForm({
           )}
         </Field>
 
-        <Field label="Your Tabroom email" required hint="The email on your Tabroom account." error={fieldErrors.tabroomEmail}>
+        <Field label="Your Tabroom email" required error={fieldErrors.tabroomEmail}>
           {({ id, describedBy, invalid }) => (
             <TextInput
               id={id}
@@ -196,7 +196,7 @@ export function RegisterForm({
         </Field>
       </div>
 
-      <Field label="Your phone number" required hint="For day-of contact at the tournament." error={fieldErrors.phoneNumber}>
+      <Field label="Your phone number" required error={fieldErrors.phoneNumber}>
         {({ id, describedBy, invalid }) => (
           <TextInput
             id={id}
@@ -228,7 +228,7 @@ export function RegisterForm({
 
       <Field
         label="Anything officers should know"
-        hint="Conflicts, travel constraints, or a note about your entry. Optional."
+        hint="Optional."
         error={fieldErrors.memberNote}
       >
         {({ id, describedBy, invalid }) => (

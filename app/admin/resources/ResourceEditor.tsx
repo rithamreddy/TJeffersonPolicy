@@ -136,7 +136,6 @@ export function ResourceEditor({ resources }: { resources: ResourceItem[] }) {
               <Field
                 label="Link"
                 required
-                hint="Any http(s) link — a Drive folder, a Google Doc, a caselist page, a PDF."
                 error={fieldErrors.url}
               >
                 {({ id, describedBy, invalid }) => (
@@ -156,7 +155,7 @@ export function ResourceEditor({ resources }: { resources: ResourceItem[] }) {
                     </Select>
                   )}
                 </Field>
-                <Field label="Who can see it" hint="Members only, or officers only. Resources are never public.">
+                <Field label="Who can see it">
                   {({ id, describedBy }) => (
                     <Select id={id} aria-describedby={describedBy} value={draft.visibility} onChange={(e) => setDraft({ ...draft, visibility: e.target.value })}>
                       {Object.entries(RESOURCE_VISIBILITIES).map(([value, label]) => (
@@ -175,7 +174,7 @@ export function ResourceEditor({ resources }: { resources: ResourceItem[] }) {
                 )}
               </Field>
 
-              <Field label="Tags" hint="Comma separated. Members can search on these.">
+              <Field label="Tags" hint="Comma separated.">
                 {({ id, describedBy }) => (
                   <TextInput id={id} aria-describedby={describedBy} value={draft.tags} onChange={(e) => setDraft({ ...draft, tags: e.target.value })} placeholder="topic, camp files, novice" />
                 )}
@@ -195,7 +194,7 @@ export function ResourceEditor({ resources }: { resources: ResourceItem[] }) {
       ) : null}
 
       {resources.length === 0 ? (
-        <EmptyState title="No resources yet" description="Add links to evidence, case files, guides, and templates for the squad." />
+        <EmptyState title="No resources yet" />
       ) : (
         <ul className="space-y-3">
           {resources.map((item) => (

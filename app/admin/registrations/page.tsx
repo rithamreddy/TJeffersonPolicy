@@ -35,7 +35,6 @@ export default async function AdminRegistrationsPage({ searchParams }: PageProps
     <>
       <PageHeading
         title="Registrations"
-        description="Every entry across all tournaments. Confirm entries here, then enter the squad on Tabroom."
       />
 
       <FilterBar
@@ -61,7 +60,6 @@ export default async function AdminRegistrationsPage({ searchParams }: PageProps
       {registrations.length === 0 ? (
         <EmptyState
           title="No registrations match"
-          description="Try clearing the filters, or open registration on a tournament so members can enter."
           action={{ href: "/admin/tournaments", label: "Manage tournaments" }}
         />
       ) : (

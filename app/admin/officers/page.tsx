@@ -19,7 +19,6 @@ export default async function AdminOfficersPage() {
     <>
       <PageHeading
         title="Officer team"
-        description="Who appears on the public officers page, and who can reach this dashboard."
         actions={
           <ButtonLink href="/officers" size="sm" variant="outline" external>
             View public page

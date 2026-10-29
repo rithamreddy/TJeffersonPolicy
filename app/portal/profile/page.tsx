@@ -27,7 +27,7 @@ export default async function ProfilePage() {
 
   return (
     <>
-      <PageHeading title="Profile" description="What officers see about you, and the few things you control yourself." />
+      <PageHeading title="Profile" />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
         <div className="space-y-6">

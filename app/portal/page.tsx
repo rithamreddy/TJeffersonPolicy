@@ -104,18 +104,16 @@ export default async function PortalDashboard({ searchParams }: PageProps) {
         <StatTile
           label="NSDA membership"
           value={<NsdaBadge status={user.nsdaStatus} />}
-          hint={user.nsdaMemberId ? `Member ID ${user.nsdaMemberId}` : "Ask an officer if this looks wrong"}
+          hint={user.nsdaMemberId ? `Member ID ${user.nsdaMemberId}` : undefined}
         />
         <StatTile
           label="Active entries"
           value={activeRegistrations.length}
-          hint={activeRegistrations.length === 0 ? "Nothing entered right now" : "Submitted or confirmed"}
           href="/portal/registrations"
         />
         <StatTile
           label="Open registrations"
           value={openNow.length}
-          hint={openNow.length === 0 ? "Nothing open at the moment" : "Tournaments accepting entries"}
           href="/portal/tournaments"
         />
       </div>
@@ -134,7 +132,6 @@ export default async function PortalDashboard({ searchParams }: PageProps) {
               {!nextTournament ? (
                 <EmptyState
                   title="No tournaments scheduled"
-                  description="Once officers publish the next tournament it will appear here with its registration deadline."
                   className="border-0 bg-transparent py-6"
                 />
               ) : (
@@ -190,7 +187,6 @@ export default async function PortalDashboard({ searchParams }: PageProps) {
               {registrations.length === 0 ? (
                 <EmptyState
                   title="You have not registered for anything yet"
-                  description="Browse open tournaments and enter an event — it takes a moment, and you can withdraw later if plans change."
                   action={{ href: "/portal/tournaments", label: "Browse tournaments" }}
                   className="m-4 border-0 bg-transparent"
                 />
@@ -244,9 +240,7 @@ export default async function PortalDashboard({ searchParams }: PageProps) {
                   </ButtonLink>
                 </>
               ) : (
-                <p className="text-base leading-relaxed text-ink/60">
-                  You are settled for the {seasonLabel(season)} season. Thank you.
-                </p>
+                <p className="text-base text-ink/60">All settled.</p>
               )}
               <Link href="/portal/dues" className="block text-sm font-semibold text-navy-600 hover:text-navy-500">
                 Dues detail →
@@ -261,9 +255,7 @@ export default async function PortalDashboard({ searchParams }: PageProps) {
             </CardHeader>
             <CardBody className={awards.length === 0 ? undefined : "p-0"}>
               {awards.length === 0 ? (
-                <p className="text-base leading-relaxed text-ink/60">
-                  Nothing recorded yet. Officers add awards after results are confirmed.
-                </p>
+                <p className="text-base text-ink/60">None yet.</p>
               ) : (
                 <ul className="divide-y-2 divide-rule-faint">
                   {awards.map((award) => (

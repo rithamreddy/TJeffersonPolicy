@@ -20,11 +20,10 @@ export default async function PortalFormsPage() {
     <>
       <PageHeading
         title="Forms"
-        description="Permission slips, sign-ups, and anything else officers need from you. You can change an answer until the form closes."
       />
 
       {forms.length === 0 ? (
-        <EmptyState title="Nothing to fill in" description="When officers open a form it will appear here." />
+        <EmptyState title="Nothing to fill in" />
       ) : (
         <div className="space-y-12">
           <FormGroup title="To do" forms={toDo} empty="You're all caught up." />

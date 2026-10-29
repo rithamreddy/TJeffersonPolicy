@@ -33,7 +33,7 @@ export default async function DuesPage() {
     <>
       <PageHeading
         title="Dues"
-        description={`Club dues for the ${seasonLabel(season)} season. What you owe is the total of your unpaid tournament fees and orders — an officer checks each one off here as it's paid. Payment itself goes through MySchoolBucks.`}
+        description={`${seasonLabel(season)} season`}
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
@@ -123,7 +123,6 @@ export default async function DuesPage() {
               {pastHistory.length === 0 ? (
                 <EmptyState
                   title="No past seasons yet"
-                  description="Once a season with activity closes out, it will appear here."
                   className="border-0 bg-transparent py-6"
                 />
               ) : (

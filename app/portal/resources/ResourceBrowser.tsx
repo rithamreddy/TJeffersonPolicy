@@ -88,7 +88,6 @@ export function ResourceBrowser({ resources }: { resources: ResourceView[] }) {
         <EmptyState
           className="mt-6"
           title="Nothing matches that search"
-          description="Try a different term, or clear the category filter."
         />
       ) : (
         <ul className="mt-5 grid gap-6 md:grid-cols-2">

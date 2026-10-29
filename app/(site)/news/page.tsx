@@ -35,7 +35,6 @@ export default async function NewsIndexPage() {
         {posts.length === 0 ? (
           <EmptyState
             title="No posts yet"
-            description="Once officers publish the first announcement it will appear here. In the meantime, Instagram and the members' Facebook group carry day-to-day updates."
             action={{ href: "/contact", label: "Where else to find us" }}
           />
         ) : (

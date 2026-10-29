@@ -36,7 +36,7 @@ export default async function AdminDuesPage({ searchParams }: PageProps) {
     <>
       <PageHeading
         title="Dues"
-        description={`${seasonLabel(season)} season. Each member's amount is the total of their unpaid tournament fees and orders — it reaches $0 once every item is checked off. Open a member's profile to do the checking off.`}
+        description={`${seasonLabel(season)} season`}
       />
 
       <div className="mb-6">
@@ -74,7 +74,6 @@ export default async function AdminDuesPage({ searchParams }: PageProps) {
       {rows.length === 0 ? (
         <EmptyState
           title="Nobody matches"
-          description="Active members appear here automatically once they sign in. Clear the filter to see everyone."
           action={{ href: `/admin/dues?season=${season}`, label: "Show everyone" }}
         />
       ) : (

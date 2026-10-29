@@ -18,7 +18,7 @@ export default async function AdminDashboard() {
     <>
       <PageHeading
         title="Officer dashboard"
-        description={`${seasonLabel(summary.seasonYear)} season at a glance. Every figure here is counted from the database, not entered by hand.`}
+        description={`${seasonLabel(summary.seasonYear)} season`}
         actions={
           <>
             <ButtonLink href="/admin/tournaments/new" size="sm">
@@ -36,7 +36,6 @@ export default async function AdminDashboard() {
         <StatTile
           label="Pending registrations"
           value={summary.pendingRegistrations}
-          hint={summary.pendingRegistrations > 0 ? "Waiting on officer confirmation" : "Nothing waiting"}
           tone={summary.pendingRegistrations > 0 ? "warn" : "default"}
           href="/admin/registrations"
         />
@@ -50,15 +49,14 @@ export default async function AdminDashboard() {
         <StatTile
           label="Open orders"
           value={summary.openOrders}
-          hint={summary.openOrders > 0 ? "Pending or waitlisted" : "Nothing outstanding"}
           href="/admin/orders"
         />
       </div>
 
       <div className="mt-3 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <StatTile label="Upcoming tournaments" value={summary.upcomingTournaments} hint={`${summary.openTournaments} open for registration`} href="/admin/tournaments" />
-        <StatTile label="Resources" value={summary.resources} hint="In the member library" href="/admin/resources" />
-        <StatTile label="Draft posts" value={summary.draftNews} hint={summary.draftNews > 0 ? "Not yet published" : "Nothing in draft"} href="/admin/news" />
+        <StatTile label="Resources" value={summary.resources} href="/admin/resources" />
+        <StatTile label="Draft posts" value={summary.draftNews} href="/admin/news" />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
@@ -71,7 +69,7 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardBody className={activity.registrations.length === 0 ? undefined : "p-0"}>
             {activity.registrations.length === 0 ? (
-              <EmptyState title="No registrations yet" description="They will appear here as members sign up." className="border-0 bg-transparent py-6" />
+              <EmptyState title="No registrations yet" className="border-0 bg-transparent py-6" />
             ) : (
               <ul className="divide-y-2 divide-rule-faint">
                 {activity.registrations.map((registration) => (
@@ -99,7 +97,7 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardBody className={activity.orders.length === 0 ? undefined : "p-0"}>
             {activity.orders.length === 0 ? (
-              <EmptyState title="No orders yet" description="Apparel and membership requests show up here." className="border-0 bg-transparent py-6" />
+              <EmptyState title="No orders yet" className="border-0 bg-transparent py-6" />
             ) : (
               <ul className="divide-y-2 divide-rule-faint">
                 {activity.orders.map((order) => (
@@ -129,7 +127,6 @@ export default async function AdminDashboard() {
             {activity.news.length === 0 ? (
               <EmptyState
                 title="Nothing written yet"
-                description="Announcements published here appear on the public news page."
                 action={{ href: "/admin/news/new", label: "Write the first post" }}
                 className="border-0 bg-transparent py-6"
               />
@@ -159,7 +156,7 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardBody className={activity.audit.length === 0 ? undefined : "p-0"}>
             {activity.audit.length === 0 ? (
-              <EmptyState title="No recorded activity" description="Administrative actions are logged here." className="border-0 bg-transparent py-6" />
+              <EmptyState title="No recorded activity" className="border-0 bg-transparent py-6" />
             ) : (
               <ul className="divide-y-2 divide-rule-faint">
                 {activity.audit.map((entry) => (

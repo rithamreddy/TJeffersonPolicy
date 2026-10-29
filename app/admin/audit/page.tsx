@@ -37,7 +37,7 @@ export default async function AuditPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <PageHeading title="Audit log" description="Who changed what, and when. Entries are written once and never edited." />
+      <PageHeading title="Audit log" />
 
       <div className="mb-10">
         <Alert tone="info">
@@ -69,7 +69,6 @@ export default async function AuditPage({ searchParams }: PageProps) {
       {entries.length === 0 ? (
         <EmptyState
           title="Nothing recorded yet"
-          description="Administrative actions appear here as officers use the dashboard."
           action={filters.action ? { href: "/admin/audit", label: "Clear filter" } : undefined}
         />
       ) : (

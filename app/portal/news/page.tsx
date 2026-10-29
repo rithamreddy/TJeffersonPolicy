@@ -22,13 +22,11 @@ export default async function PortalNewsPage() {
     <>
       <PageHeading
         title="News"
-        description="Announcements from the officer team. Posts marked Members only are not on the public website."
       />
 
       {posts.length === 0 ? (
         <EmptyState
           title="No posts yet"
-          description="When officers publish an announcement it will appear here, and it will also arrive in your email."
         />
       ) : (
         <ul className="border-t-2 border-rule">

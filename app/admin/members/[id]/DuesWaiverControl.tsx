@@ -56,7 +56,7 @@ export function DuesWaiverControl({
           setSaved(false);
         }}
       />
-      <Field label="Note" hint="Visible to the member on their own dues page.">
+      <Field label="Note" hint="Visible to the member.">
         {({ id, describedBy }) => (
           <TextInput
             id={id}

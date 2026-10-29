@@ -57,7 +57,6 @@ export default async function AchievementsPage() {
         {achievements.length === 0 ? (
           <EmptyState
             title="The record is still being entered"
-            description="This site ships with no results in it — officers add each one from the dashboard as tournaments finish, so nothing here is ever a placeholder. Check back, or follow the news feed for the latest."
             action={{ href: "/news", label: "Read team news" }}
           />
         ) : (

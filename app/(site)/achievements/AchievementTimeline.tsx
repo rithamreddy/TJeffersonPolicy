@@ -115,7 +115,6 @@ export function AchievementTimeline({ achievements }: { achievements: Achievemen
         <EmptyState
           className="mt-12"
           title="Nothing matches that filter"
-          description="Try a different level or season."
         />
       ) : (
         <div className="mt-16 space-y-20">

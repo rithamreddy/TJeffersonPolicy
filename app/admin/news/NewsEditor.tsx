@@ -151,7 +151,6 @@ export function NewsEditor({
         <Field
           label="Summary"
           required
-          hint="One or two sentences. Shown in the news list and used as the page description."
           error={fieldErrors.excerpt}
         >
           {({ id, describedBy, invalid }) => (
@@ -159,7 +158,7 @@ export function NewsEditor({
           )}
         </Field>
 
-        <Field label="Body" required hint="Markdown. Raw HTML is not allowed and will be shown as plain text." error={fieldErrors.body}>
+        <Field label="Body" required hint="Markdown." error={fieldErrors.body}>
           {({ id, describedBy, invalid }) => (
             <TextArea id={id} rows={16} aria-describedby={describedBy} invalid={invalid} value={draft.body} onChange={(e) => set("body", e.target.value)} required className="font-mono text-[13px]" />
           )}
@@ -218,7 +217,7 @@ export function NewsEditor({
           </Alert>
         ) : null}
 
-        <Field label="Image URL" hint="Optional. A link to an image hosted elsewhere." error={fieldErrors.imageUrl}>
+        <Field label="Image URL" error={fieldErrors.imageUrl}>
           {({ id, describedBy, invalid }) => (
             <TextInput id={id} type="url" aria-describedby={describedBy} invalid={invalid} value={draft.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} />
           )}

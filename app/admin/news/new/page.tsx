@@ -15,7 +15,7 @@ export default async function NewNewsPage() {
       <Link href="/admin/news" className="mb-4 inline-block text-sm font-semibold text-navy-600 hover:text-navy-500">
         ← All posts
       </Link>
-      <PageHeading title="Write a post" description="Create it as a draft first — you can publish once it reads right." />
+      <PageHeading title="Write a post" />
       <Card>
         <CardBody className="sm:p-6">
           <NewsEditor initial={emptyNewsDraft} />

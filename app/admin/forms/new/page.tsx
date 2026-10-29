@@ -18,7 +18,6 @@ export default async function NewFormPage() {
       </Link>
       <PageHeading
         title="New form"
-        description="Save it as a draft while you work. Members can't see it until you set it to Open."
       />
       <Card>
         <CardBody className="sm:p-8">

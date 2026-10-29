@@ -61,7 +61,6 @@ export default async function AdminSettingsPage() {
     <>
       <PageHeading
         title="Club settings"
-        description="Facts the site shows that change from year to year. Editing them here avoids a code change."
       />
 
       <div className="mb-5">

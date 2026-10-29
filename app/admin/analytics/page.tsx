@@ -22,13 +22,13 @@ export default async function AnalyticsPage() {
     <>
       <PageHeading
         title="Analytics"
-        description={`Counted live from the database for the ${seasonLabel(season)} season. Nothing here is hand-maintained.`}
+        description={`${seasonLabel(season)} season`}
       />
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <StatTile label="Active members" value={summary.activeMembers} hint={`${summary.totalMembers} total accounts`} />
-        <StatTile label="Season entries" value={analytics.seasonRegistrations} hint="Registrations for tournaments this season" />
-        <StatTile label="Tournaments" value={analytics.tournaments.length} hint="Scheduled this season" />
+        <StatTile label="Season entries" value={analytics.seasonRegistrations} />
+        <StatTile label="Tournaments" value={analytics.tournaments.length} />
         <StatTile label="Dues outstanding" value={formatMoney(summary.outstandingCents)} tone={summary.outstandingCents > 0 ? "warn" : "good"} />
       </div>
 
@@ -39,7 +39,7 @@ export default async function AnalyticsPage() {
           </CardHeader>
           <CardBody>
             {analytics.byGrade.length === 0 ? (
-              <EmptyState title="No active members" description="Members appear once they sign in." className="border-0 bg-transparent py-4" />
+              <EmptyState title="No active members" className="border-0 bg-transparent py-4" />
             ) : (
               <ul className="space-y-3">
                 {analytics.byGrade.map((row) => (
@@ -67,7 +67,7 @@ export default async function AnalyticsPage() {
           </CardHeader>
           <CardBody>
             {analytics.byRegistrationStatus.length === 0 ? (
-              <EmptyState title="No registrations yet" description="They appear as members enter tournaments." className="border-0 bg-transparent py-4" />
+              <EmptyState title="No registrations yet" className="border-0 bg-transparent py-4" />
             ) : (
               <ul className="space-y-2.5">
                 {analytics.byRegistrationStatus.map((row) => (
@@ -89,7 +89,6 @@ export default async function AnalyticsPage() {
             {analytics.tournaments.length === 0 ? (
               <EmptyState
                 title="No tournaments this season"
-                description="Create a tournament and open registration to start collecting entries."
                 action={{ href: "/admin/tournaments/new", label: "New tournament" }}
                 className="border-0 bg-transparent py-4"
               />

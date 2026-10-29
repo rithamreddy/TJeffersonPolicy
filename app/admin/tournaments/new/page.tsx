@@ -19,7 +19,6 @@ export default async function NewTournamentPage() {
 
       <PageHeading
         title="New tournament"
-        description="Save it as a draft while you work out the details, then switch it to open when registration should start."
       />
 
       <Card>

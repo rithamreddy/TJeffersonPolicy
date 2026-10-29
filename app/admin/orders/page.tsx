@@ -37,7 +37,6 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
     <>
       <PageHeading
         title="Orders"
-        description="Apparel, merchandise, and membership requests. Payment happens externally; this tracks fulfilment."
       />
 
       <FilterBar
@@ -55,7 +54,6 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
       {orders.length === 0 ? (
         <EmptyState
           title="No orders match"
-          description="Members place orders from the team portal. Make sure at least one catalogue item is active."
         />
       ) : (
         <TableWrap label="Orders" className="mb-8">
@@ -111,7 +109,6 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
           {items.length === 0 ? (
             <EmptyState
               title="No items yet"
-              description="Add apparel, merchandise, or membership items so members have something to order."
               action={{ href: "/admin/orders/catalogue", label: "Add an item" }}
               className="border-0 bg-transparent py-6"
             />

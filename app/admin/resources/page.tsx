@@ -27,7 +27,6 @@ export default async function AdminResourcesPage() {
     <>
       <PageHeading
         title="Resources"
-        description="The member library. Nothing here is public — members must be signed in to see any of it."
         actions={
           <ButtonLink href="/portal/resources" size="sm" variant="outline">
             Member view
